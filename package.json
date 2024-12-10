@@ -1,0 +1,24 @@
+{
+  "name": "auth_jwt_nodejs",
+  "version": "1.0.0",
+  "description": "Authentication & JWT project",
+  "main": "./src/index.js",
+  "scripts": {
+    "devStart": "nodemon index.js",
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Andoni ALONSO TORT",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.16.0",
+    "eslint": "^9.16.0",
+    "globals": "^15.13.0",
+    "nodemon": "^3.1.7"
+  }
+}
