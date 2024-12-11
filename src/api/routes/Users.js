@@ -5,13 +5,13 @@ const router = express.Router();
 
 router.get( '/', async ( req, res ) => {
     const users = await userService.getAllUsers();    
-    res.json( users );
+    res.status( 200 ).json( users );
 } );
 
 router.post( '/', async ( req, res ) => {
     const user = req.body;
     const newUser = await userService.createUser( user );
-    res.json( newUser );
+    res.status( 201 ).json( newUser );
 } );
 
 router.delete( '/:id', async( req, res ) => {
@@ -19,7 +19,7 @@ router.delete( '/:id', async( req, res ) => {
 
     try {
         const deletedUser = await userService.deleteUser( id );
-        res.json( deletedUser );
+        res.status( 200 ).json( deletedUser );
     } catch( e ) {
         const status = e?.status || 500;
         const msg = { Error : e?.message || 'Error Server' };
