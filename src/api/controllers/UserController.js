@@ -1,7 +1,10 @@
 const users = [
     {
+        _id: '1',
         name: 'Andoni',
-        lastname: 'Alonso Tort'
+        lastname: 'Alonso Tort',
+        password: 'pwd',
+        email: 'andonialonsotort@gmail.com'
     }
 ];
 
@@ -22,7 +25,28 @@ async function postUser( user ) {
     users.push( user );
     return user;
 }
+
+/**
+ * Delete the given user from the database
+ * @param {String} id
+ * @returns the deleted user
+ */
+async function deleteUser( id ) {
+    const ids = users.map( u => u._id );
+
+    if( ids.includes( id ) ) {
+        const idx = users.indexOf( id );
+        const userDeleted = users.splice( idx, 1 );
+        return userDeleted;
+    }
+
+    const error = new Error( 'Not found' );
+    error.status = 404;
+    throw error;
+}
+
 module.exports = {
-    getAll: getAll,
-    postUser: postUser
+    getAll,
+    postUser,
+    deleteUser
 };

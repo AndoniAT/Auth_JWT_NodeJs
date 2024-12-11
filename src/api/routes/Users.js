@@ -14,4 +14,18 @@ router.post( '/', async ( req, res ) => {
     res.json( newUser );
 } );
 
+router.delete( '/:id', async( req, res ) => {
+    const { id } = req.params;
+
+    try {
+        const deletedUser = await userService.deleteUser( id );
+        res.json( deletedUser );
+    } catch( e ) {
+        const status = e?.status || 500;
+        const msg = { Error : e?.message || 'Error Server' };
+
+        res.status( status ).json( msg );
+    }
+} );
+
 module.exports = router;

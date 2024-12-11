@@ -5,8 +5,12 @@ const userController = require( '../controllers/UserController' );
  * @returns a list of all users
  */
 async function getAllUsers() {
-    const users = await userController.getAll();
-    return users;
+    try {
+        const users = await userController.getAll();
+        return users;
+    } catch( e ) {
+        throw new Error( e );
+    }
 }
 
 /**
@@ -15,11 +19,32 @@ async function getAllUsers() {
  * @returns the new user
  */
 async function createUser( user ){
-    const newUser = await userController.postUser( user );
-    return newUser;
+    try {
+        const newUser = await userController.postUser( user );
+        return newUser;
+    } catch( e ) {
+        throw new Error( e );
+    }
+}
+
+/**
+ * Call deleteUser function from controller to delete a user by id
+ * @param {String} id 
+ * @returns the deleted user
+ */
+async function deleteUser( id ) {
+    try {
+        const userDeleted = await userController.deleteUser( id );
+        return userDeleted;
+    } catch( e ) {
+        const err = new Error( e.message );
+        err.status = e.status;
+        throw err;
+    }
 }
 
 module.exports = {
-    getAllUsers: getAllUsers,
-    createUser: createUser
+    getAllUsers,
+    createUser,
+    deleteUser
 };
