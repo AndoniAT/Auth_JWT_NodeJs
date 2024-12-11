@@ -35,12 +35,8 @@ class UserService {
      * @returns a list of all users
      */
     static async getAllUsers() {
-        try {
-            const users = await userController.getAll();
-            return users;
-        } catch( e ) {
-            throw new Error( e );
-        }
+        const users = await userController.getAll();
+        return users;
     }
     
     /**
@@ -49,14 +45,10 @@ class UserService {
      * @returns the new user
      */
     static async createUser( user ){
-        try {
-            const pwd = await userHelpers.generateHashPwd( user.password );
-            user.password = pwd; // Set hashed password
-            const newUser = await userController.postUser( user );
-            return newUser;
-        } catch( e ) {
-            throw new Error( e );
-        }
+        const pwd = await userHelpers.generateHashPwd( user.password );
+        user.password = pwd; // Set hashed password
+        const newUser = await userController.postUser( user );
+        return newUser;
     }
     
     /**
@@ -65,14 +57,8 @@ class UserService {
      * @returns the deleted user
      */
     static async deleteUser( id ) {
-        try {
-            const userDeleted = await userController.deleteUser( id );
-            return userDeleted;
-        } catch( e ) {
-            const err = new Error( e.message );
-            err.status = e.status;
-            throw err;
-        }
+        const userDeleted = await userController.deleteUser( id );
+        return userDeleted;
     }
 };
 
