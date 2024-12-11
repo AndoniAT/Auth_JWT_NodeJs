@@ -19,5 +19,15 @@ Nodemon package has been include for running dev environnment :
 To run it, please use :
 > npm run devStart
 
+Another packages installed : 
+<ul>
+    <li>
+        <i>bcrypt :</i> To hash and compare paswords.
+    </li>
+    <li>
+        <i>jsonwebtoken :</i> To generate and compare token between server & client.
+    </li>
+</ul>
+
 <hr/>
 <h5>Author: <i>Andoni ALONSO TORT</i><h5>
