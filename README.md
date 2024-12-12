@@ -29,5 +29,12 @@ Another packages installed :
     </li>
 </ul>
 
+To generate our ACCESS_TOKEN_SECRET :
+> node
+> require('crypto').randomBytes(64).toString('hex')
+
+copy this string to the ACCESS_TOKEN_SECRET key in your .env
+Do it again and put the value in REFRESH_TOKEN_SECRET key
+
 <hr/>
 <h5>Author: <i>Andoni ALONSO TORT</i><h5>

@@ -1,9 +1,11 @@
+/* eslint-disable no-undef */
 /**
  * Author : Andoni ALONSO TORT
  */
 
-const userController = require( '../controllers/UserController' );
-const userHelpers = require( '../helpers/UserHelpers' );
+const UserController = require( '../controllers/UserController' );
+const UserHelpers = require( '../helpers/UserHelpers' );
+const jwt = require( 'jsonwebtoken' );
 
 class UserService {
 
@@ -14,15 +16,22 @@ class UserService {
      * @returns
      */
     static async login( email, password ) {
-        const user = await userController.getUserByEmail( email );
+        const user = await UserController.getUserByEmail( email );
         if( !user ) {
             const error = new Error( 'Cannot find user' );
             error.status = 400;
             throw error;
         }
 
-        if( await userHelpers.comparePasswords( password, user.password ) ) {
-            return user;
+        if( await UserHelpers.comparePasswords( password, user.password ) ) {
+            const accessToken = UserService.generateAccesToken( user );
+            const refreshToken = await UserService.generateRefreshToken( user );
+
+            return {
+                user,
+                accessToken,
+                refreshToken
+            };
         } else {
             const error = new Error( 'Bad password' );
             error.status = 400;
@@ -31,11 +40,67 @@ class UserService {
     }
 
     /**
+     * 
+     * @param {string} token 
+     * @param {function name( err, user ) {}} cb 
+     */
+    static verifyToken( token, cb ) {
+        jwt.verify( token, process.env.ACCESS_TOKEN_SECRET, cb );
+    }
+
+    /**
+     * 
+     * @param {string} refreshToken 
+     * @param {function name( err, user ) {}} cb 
+     */
+    static verifyRefreshToken( refreshToken, cb ) {
+        jwt.verify( refreshToken, process.env.REFRESH_TOKEN_SECRET, cb );
+    }
+
+    /**
+     * Sign jwt
+     * @param {*} user 
+     * @returns {string} the geneated token
+     */
+    static generateAccesToken( user ) {
+        return jwt.sign( user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '30s' } );
+    }
+
+    /**
+     * Call fuction in controller to save the new refresh token
+     * @param {*} token 
+     * @returns 
+     */
+    static async generateRefreshToken( user ) {
+        const refreshToken = jwt.sign( user, process.env.REFRESH_TOKEN_SECRET );
+        await UserController.saveRefreshToken( refreshToken );
+        return refreshToken;
+    }
+
+    /**
+     * Call userController to verify if a refresh token exists
+     * @param {string} token 
+     * @returns 
+     */
+    static refreshTokenExists( token ) {
+        return UserController.refreshTokenExists( token );
+    }
+
+    /**
+     * 
+     * @param {string} token 
+     * @returns 
+     */
+    static logout( token ) {
+        return UserController.removeToken( token );
+    }
+
+    /**
      * Call getAll function from controller to get all the users
      * @returns a list of all users
      */
     static async getAllUsers() {
-        const users = await userController.getAll();
+        const users = await UserController.getAll();
         return users;
     }
     
@@ -45,9 +110,9 @@ class UserService {
      * @returns the new user
      */
     static async createUser( user ){
-        const pwd = await userHelpers.generateHashPwd( user.password );
+        const pwd = await UserHelpers.generateHashPwd( user.password );
         user.password = pwd; // Set hashed password
-        const newUser = await userController.postUser( user );
+        const newUser = await UserController.postUser( user );
         return newUser;
     }
     
@@ -57,7 +122,7 @@ class UserService {
      * @returns the deleted user
      */
     static async deleteUser( id ) {
-        const userDeleted = await userController.deleteUser( id );
+        const userDeleted = await UserController.deleteUser( id );
         return userDeleted;
     }
 };

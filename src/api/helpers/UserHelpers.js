@@ -3,7 +3,6 @@
  */
 
 const bcrypt = require( 'bcrypt' );
-
 class UserHelpers {
     /**
      * Hash a given password to store in database
