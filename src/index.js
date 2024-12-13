@@ -3,8 +3,9 @@
  */
 
 const express = require( 'express' );
-const usersRoute = require( './api/routes/Users.js' );
 require( 'dotenv' ).config();
+const usersRoute = require( './api/routes/Users.js' );
+const authRoute = require( './api/routes/Auth.js' );
 
 const app = express();
 
@@ -16,6 +17,7 @@ const PORT = process.env.PORT || 8001;
 
 // APIs
 app.use( '/api/users/', usersRoute );
+app.use( '/api/auth/', authRoute );
 
 app.listen( PORT, () => {
     console.log( `Application listening in port: ${PORT}` );

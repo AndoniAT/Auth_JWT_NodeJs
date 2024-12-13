@@ -3,7 +3,7 @@
  */
 
 const bcrypt = require( 'bcrypt' );
-class UserHelpers {
+class AuthHelpers {
     /**
      * Hash a given password to store in database
      * @param {string} pwd 
@@ -27,4 +27,4 @@ class UserHelpers {
     }
 }
 
-module.exports = UserHelpers;
+module.exports = AuthHelpers;
