@@ -6,9 +6,18 @@ const express = require( 'express' );
 require( 'dotenv' ).config();
 const usersRoute = require( './api/routes/Users.js' );
 const authRoute = require( './api/routes/Auth.js' );
+const cors = require( 'cors' );
 
 const app = express();
 
+/*
+== Example for accepting specific origin ==
+app.use( cors( {
+    origin: 'http://localhost:5174'
+    } ) );
+    */
+   
+app.use( cors() );
 app.use( express.json() ); // Parse json for body
 app.use( express.urlencoded( { extended: true } ) ); // Parse URL-encoded data
 
