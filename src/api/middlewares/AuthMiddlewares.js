@@ -1,4 +1,4 @@
-const AuthService = require( '../services/AuthService' );
+const AuthHelpers = require( '../helpers/AuthHelpers' );
 
 function authenticateToken( req, res, next ) {
     const authHeader = req.headers[ 'authorization' ];
@@ -8,7 +8,7 @@ function authenticateToken( req, res, next ) {
         return res.sendStatus( 401 );
     }
 
-    AuthService.verifyToken( token, ( err, user ) => {
+    AuthHelpers.verifyToken( token, ( err, user ) => {
         if( err ) {
             return res.sendStatus( 403 );
         }

@@ -2,12 +2,21 @@
  * Author : Andoni ALONSO TORT
  */
 
+const jwt = require( 'jsonwebtoken' );
 const bcrypt = require( 'bcrypt' );
+const AuthService = require( '../services/AuthService' );
+
 class AuthHelpers {
+    // eslint-disable-next-line no-undef
+    static #accesTokenSecret = process.env.ACCESS_TOKEN_SECRET;
+    // eslint-disable-next-line no-undef
+    static #refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
+
+
     /**
      * Hash a given password to store in database
      * @param {string} pwd 
-     * @returns {string} Hashed password
+     * @returns {Promise<string>} Hashed password
      */
     static async generateHashPwd( pwd ) {
         const salt = await bcrypt.genSalt( 10 ); // 10 by detault
@@ -24,6 +33,48 @@ class AuthHelpers {
     static async comparePasswords( pwd, hash ) {
         const isSame = await bcrypt.compare( pwd, hash );
         return isSame;
+    }
+
+    /**
+     * @param {string} token
+     */
+    static verifyToken( token, cb ) {
+        jwt.verify( token, this.#accesTokenSecret, cb );
+    }
+    
+    /**
+     * @param {string} refreshToken
+     */
+    static verifyRefreshToken( refreshToken, cb ) {
+        jwt.verify( refreshToken, this.#refreshTokenSecret, cb );
+    }
+
+    /**
+     * Sign jwt
+     * @param {*} user 
+     * @returns {string} the geneated token
+     */
+    static generateAccesToken( user ) {
+        return jwt.sign( user, this.#accesTokenSecret, { expiresIn: '60s' } );
+    }
+
+    /**
+     * Call fuction in controller to save the new refresh token
+     * @returns
+     */
+    static async generateRefreshToken( user ) {
+        const refreshToken = jwt.sign( user, this.#refreshTokenSecret );
+        await AuthService.saveRefreshToken( refreshToken );
+        return refreshToken;
+    }
+
+    /**
+     * Call AuthService to verify if a refresh token exists
+     * @param {string} token 
+     * @returns 
+     */
+    static refreshTokenExists( token ) {
+        return AuthService.refreshTokenExists( token );
     }
 }
 

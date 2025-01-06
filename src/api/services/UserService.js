@@ -1,42 +1,82 @@
 /**
  * Author : Andoni ALONSO TORT
  */
+// Constant for testing purpose
 
-const UserController = require( '../controllers/UserController' );
-const AuthHelpers = require( '../helpers/AuthHelpers' );
+const CustomError = require( '../classes/curstomError' );
+
+const ROLES = {
+    admin: 1000,
+    user: 2000
+};
+
+// Store in database in the future
+const users = [
+    {
+        _id: '1',
+        firstname: 'Andoni',
+        lastname: 'Alonso Tort',
+        password: '$2b$10$u2tk/H6htFHNOgOpC5W7Y.9jZdrW2TfYBlWah31ko5Fjvbp/Kxe6y',
+        email: 'andonialonsotort@gmail.com',
+        roles: ROLES.admin
+    },
+    {
+        _id: '2',
+        firstname: 'Jean',
+        lastname: 'Claude',
+        password: '$2b$10$u2tk/H6htFHNOgOpC5W7Y.9jZdrW2TfYBlWah31ko5Fjvbp/Kxe6y',
+        email: 'jeanclaude@example.com',
+        roles: ROLES.user
+    }
+];
 
 class UserService {
-
     /**
-     * Call getAll function from controller to get all the users
+     * Get all the users from the database
      * @returns a list of all users
      */
-    static async getAllUsers() {
-        const users = await UserController.getAll();
-        return users;
+    static async getAll() {
+        return users;    
+    };
+
+    /**
+     * Find a user by email in database
+     * @param {string} email 
+     * @returns
+     */
+    static async getUserByEmail( email ) {
+        const user = users.find( user => user.email == email );
+        return user;
     }
     
     /**
-     * Call postUser function from controller to create a new user
-     * @param {*} user
+     * Create a new user in database
+     * @param {*} user 
      * @returns the new user
      */
-    static async createUser( user ){
-        const pwd = await AuthHelpers.generateHashPwd( user.password );
-        user.password = pwd; // Set hashed password
-        user.roles = [ 2000 ];
-        const newUser = await UserController.postUser( user );
-        return newUser;
+    static async postUser( user ) {
+        user.roles = [ ROLES.user ];
+        users.push( user );
+        return user;
     }
     
     /**
-     * Call deleteUser function from controller to delete a user by id
-     * @param {String} id 
+     * Delete the given user from the database
+     * @param {String} id
      * @returns the deleted user
      */
     static async deleteUser( id ) {
-        const userDeleted = await UserController.deleteUser( id );
-        return userDeleted;
+        const ids = users.map( u => u._id );
+    
+        if( ids.includes( id ) ) {
+            const idx = ids.indexOf( id );
+            const userDeleted = users.splice( idx, 1 );
+            return userDeleted;
+        }
+    
+        const error = new CustomError( 'Not found' );
+        error.status = 404;
+        throw error;
     }
 };
 
