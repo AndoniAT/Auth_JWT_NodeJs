@@ -39,7 +39,7 @@ router.post( '/token', async ( req, res ) => {
             return res.sendStatus( 403 );
         }
 
-        const accessToken = AuthService.generateAccesToken( { name : user.name } );
+        const accessToken = AuthService.generateAccesToken( { firstname : user.firstname } );
         res.json( {
             accessToken
         } );

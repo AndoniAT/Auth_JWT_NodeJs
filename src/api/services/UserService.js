@@ -24,6 +24,7 @@ class UserService {
     static async createUser( user ){
         const pwd = await AuthHelpers.generateHashPwd( user.password );
         user.password = pwd; // Set hashed password
+        user.roles = [ 2000 ];
         const newUser = await UserController.postUser( user );
         return newUser;
     }

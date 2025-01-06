@@ -36,5 +36,23 @@ To generate our ACCESS_TOKEN_SECRET :
 copy this string to the ACCESS_TOKEN_SECRET key in your .env
 Do it again and put the value in REFRESH_TOKEN_SECRET key
 
+
+<h6>== USER ROLES ==</h6>
+
+<table style="margin: 0 auto; width: fit-content; border: 1px solid black;">
+  <tr style="background: gray;">
+    <th style="border: 1px solid black;">Role</th>
+    <th style="border: 1px solid black;">Code</th>
+  </tr>
+  <tr>
+    <td style="border: 1px solid black">Admin</td>
+    <td style="border: 1px solid black">1000</td>
+  </tr>
+  <tr>
+    <td style="border: 1px solid black">User</td>
+    <td style="border: 1px solid black">2000</td>
+  </tr>
+</table>
+
 <hr/>
 <h5>Author: <i>Andoni ALONSO TORT</i><h5>

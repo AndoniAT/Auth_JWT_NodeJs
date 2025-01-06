@@ -7,10 +7,19 @@
 const users = [
     {
         _id: '1',
-        name: 'Andoni',
+        firstname: 'Andoni',
         lastname: 'Alonso Tort',
         password: '$2b$10$u2tk/H6htFHNOgOpC5W7Y.9jZdrW2TfYBlWah31ko5Fjvbp/Kxe6y',
-        email: 'andonialonsotort@gmail.com'
+        email: 'andonialonsotort@gmail.com',
+        roles: [ 1000 ]
+    },
+    {
+        _id: '2',
+        firstname: 'Jean',
+        lastname: 'Claude',
+        password: '$2b$10$u2tk/H6htFHNOgOpC5W7Y.9jZdrW2TfYBlWah31ko5Fjvbp/Kxe6y',
+        email: 'jeanclaude@example.com',
+        roles: [ 2000 ]
     }
 ];
 
