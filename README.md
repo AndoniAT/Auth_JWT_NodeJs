@@ -27,6 +27,9 @@ Another packages installed :
     <li>
         <i>jsonwebtoken :</i> To generate and compare token between server & client.
     </li>
+    <li>
+        <i>cookie-parser :</i> Parse Cookie header and populate req.cookies with an object keyed by the cookie names.
+    </li>
 </ul>
 
 To generate our ACCESS_TOKEN_SECRET :

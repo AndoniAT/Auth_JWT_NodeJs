@@ -4,6 +4,7 @@
 
 const express = require( 'express' );
 require( 'dotenv' ).config();
+const path = require( 'path' );
 const usersRoute = require( './api/routes/Users.js' );
 const authRoute = require( './api/routes/Auth.js' );
 const cors = require( 'cors' );
@@ -20,6 +21,10 @@ app.use( cors( {
 app.use( cors() );
 app.use( express.json() ); // Parse json for body
 app.use( express.urlencoded( { extended: true } ) ); // Parse URL-encoded data
+
+// serve static files
+// eslint-disable-next-line no-undef
+app.use( '/', express.static( path.join( __dirname, '/public' ) ) );
 
 // eslint-disable-next-line no-undef
 const PORT = process.env.PORT || 8001;
