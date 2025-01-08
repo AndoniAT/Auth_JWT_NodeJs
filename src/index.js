@@ -8,7 +8,9 @@ const path = require( 'path' );
 const usersRoute = require( './api/routes/Users.js' );
 const authRoute = require( './api/routes/Auth.js' );
 const cors = require( 'cors' );
-
+const cookieParser = require( 'cookie-parser' );
+const corsOptions = require( './config/corsOptions.js' );
+const credentials = require('./api/middlewares/Credentials.js');
 const app = express();
 
 /*
@@ -18,9 +20,19 @@ app.use( cors( {
     } ) );
     */
    
-app.use( cors() );
-app.use( express.json() ); // Parse json for body
+// Handle options credentials
+// and fetch cookies credential requirement
+app.use( credentials );
+
+// Cross Origin Resource Sharing
+app.use( cors( corsOptions ) );
+
 app.use( express.urlencoded( { extended: true } ) ); // Parse URL-encoded data
+app.use( express.json() ); // Parse json for body
+
+// Middleware for cookies
+app.use( cookieParser() );
+
 
 // serve static files
 // eslint-disable-next-line no-undef

@@ -4,7 +4,6 @@
 
 const jwt = require( 'jsonwebtoken' );
 const bcrypt = require( 'bcrypt' );
-const AuthService = require( '../services/AuthService' );
 
 class AuthHelpers {
     // eslint-disable-next-line no-undef
@@ -63,18 +62,8 @@ class AuthHelpers {
      * @returns
      */
     static async generateRefreshToken( user ) {
-        const refreshToken = jwt.sign( user, this.#refreshTokenSecret );
-        await AuthService.saveRefreshToken( refreshToken );
+        const refreshToken = jwt.sign( user, this.#refreshTokenSecret, { expiresIn: '1d' }  );
         return refreshToken;
-    }
-
-    /**
-     * Call AuthService to verify if a refresh token exists
-     * @param {string} token 
-     * @returns 
-     */
-    static refreshTokenExists( token ) {
-        return AuthService.refreshTokenExists( token );
     }
 }
 

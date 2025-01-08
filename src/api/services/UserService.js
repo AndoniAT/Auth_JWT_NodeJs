@@ -18,7 +18,8 @@ const users = [
         lastname: 'Alonso Tort',
         password: '$2b$10$u2tk/H6htFHNOgOpC5W7Y.9jZdrW2TfYBlWah31ko5Fjvbp/Kxe6y',
         email: 'andonialonsotort@gmail.com',
-        roles: ROLES.admin
+        roles: ROLES.admin,
+        refreshToken: null
     },
     {
         _id: '2',
@@ -26,7 +27,8 @@ const users = [
         lastname: 'Claude',
         password: '$2b$10$u2tk/H6htFHNOgOpC5W7Y.9jZdrW2TfYBlWah31ko5Fjvbp/Kxe6y',
         email: 'jeanclaude@example.com',
-        roles: ROLES.user
+        roles: ROLES.user,
+        refreshToken: null
     }
 ];
 
@@ -45,8 +47,18 @@ class UserService {
      * @returns
      */
     static async getUserByEmail( email ) {
-        const user = users.find( user => user.email == email );
-        return user;
+        const user = users.find( user => user.email === email );
+        return { ...user };
+    }
+
+    /**
+     * Get a user with the refresh token
+     * @param {string} token 
+     * @returns {Promise<Object>} the user
+     */
+    static async getUserByRefreshToken( token ) {
+        const user = users.find( user => user.refreshToken === token );
+        return user ? { ...user } : null;
     }
     
     /**
@@ -56,8 +68,32 @@ class UserService {
      */
     static async postUser( user ) {
         user.roles = [ ROLES.user ];
+        user.refreshToken = null;
         users.push( user );
-        return user;
+        return { ...user };
+    }
+
+    /**
+     * Update de user in database
+     * @param {string} email
+     * @param {Object} user Object with the properties we want to modify
+     * @returns {Promise<Object>} the user modified
+     */
+    static async updateUserByEmail( email, user ) {
+        let userFound = users.find( u => u.email == email );
+        if( !userFound ) {
+            const err = new CustomError( 'User not found' );
+            err.status= 400;
+            throw err;
+        }
+
+        for( let prop in user ) {
+            if ( Object.hasOwnProperty.call( userFound, prop ) ) {
+                userFound[ prop ] = user[ prop ];
+            }
+        }
+
+        return { ...userFound };
     }
     
     /**
@@ -71,7 +107,7 @@ class UserService {
         if( ids.includes( id ) ) {
             const idx = ids.indexOf( id );
             const userDeleted = users.splice( idx, 1 );
-            return userDeleted;
+            return { ...userDeleted };
         }
     
         const error = new CustomError( 'Not found' );
