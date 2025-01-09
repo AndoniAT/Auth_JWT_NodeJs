@@ -30,6 +30,9 @@ Another packages installed :
     <li>
         <i>cookie-parser :</i> Parse Cookie header and populate req.cookies with an object keyed by the cookie names.
     </li>
+    <li>
+      <i>mongoose :</i> Mongoose is a MongoDB object modeling tool designed to work in an asynchronous environment. 
+    </li>
 </ul>
 
 To generate our ACCESS_TOKEN_SECRET :
