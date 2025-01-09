@@ -10,7 +10,7 @@ const authRoute = require( './api/routes/Auth.js' );
 const cors = require( 'cors' );
 const cookieParser = require( 'cookie-parser' );
 const corsOptions = require( './config/corsOptions.js' );
-const credentials = require('./api/middlewares/Credentials.js');
+const credentials = require( './api/middlewares/credentials.js' );
 const app = express();
 
 /*
