@@ -11,8 +11,14 @@ const cors = require( 'cors' );
 const cookieParser = require( 'cookie-parser' );
 const corsOptions = require( './config/corsOptions.js' );
 const credentials = require( './api/middlewares/credentials.js' );
+const mongoose = require( 'mongoose' );
 const app = express();
 
+mongoose.connect( process.env.DATABASE_URL + process.env.DATABASE_NAME )
+    .then( () => {
+        console.log( `== Connected to ${process.env.DATABASE_NAME} ==` );
+    } )
+    .catch( console.error );
 /*
 == Example for accepting specific origin ==
 app.use( cors( {

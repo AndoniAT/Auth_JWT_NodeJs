@@ -21,11 +21,10 @@ class AuthController {
             if( !user ) {
                 res.status( 400 ).json( 'Cannot find user' );
             }
-
+            
             if( await AuthHelpers.comparePasswords( password, user.password ) ) {
                 const accessToken = AuthHelpers.generateAccesToken( user );
                 const refreshToken = await AuthHelpers.generateRefreshToken( user ); 
-                
                 // Saving refresh token with current user
                 await UserService.updateUserByEmail( email, { refreshToken } );
 
@@ -65,6 +64,7 @@ class AuthController {
         }
 
         const userFound = await UserService.getUserByRefreshToken( refreshToken );
+
         if( !userFound ) {
             return res.sendStatus( 401 );
         }

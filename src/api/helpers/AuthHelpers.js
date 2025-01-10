@@ -50,19 +50,21 @@ class AuthHelpers {
 
     /**
      * Sign jwt
-     * @param {*} user 
+     * @param {Object} user 
      * @returns {string} the geneated token
      */
     static generateAccesToken( user ) {
-        return jwt.sign( user, this.#accesTokenSecret, { expiresIn: '60s' } );
+        const token = jwt.sign( { ... user }, this.#accesTokenSecret, { expiresIn: '60s' } );
+        return token;
+        
     }
 
     /**
      * Call fuction in controller to save the new refresh token
-     * @returns
+     * @returns {Promise<string>}
      */
     static async generateRefreshToken( user ) {
-        const refreshToken = jwt.sign( user, this.#refreshTokenSecret, { expiresIn: '1d' }  );
+        const refreshToken = jwt.sign( { ... user }, this.#refreshTokenSecret, { expiresIn: '1d' }  );
         return refreshToken;
     }
 }
