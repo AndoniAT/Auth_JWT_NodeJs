@@ -3,7 +3,7 @@
  */
 
 const express = require( 'express' );
-const { authenticateToken } = require( '../middlewares/authMiddlewares' );
+const { authenticateToken } = require( '../middlewares/AuthMiddlewares' );
 const UserController = require( '../controllers/UserController' );
 const router = express.Router();
 

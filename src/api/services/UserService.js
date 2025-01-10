@@ -1,8 +1,6 @@
 /**
  * Author : Andoni ALONSO TORT
  */
-// Constant for testing purpose
-
 const CustomError = require( '../classes/curstomError' );
 const User = require( '../models/User' );
 
