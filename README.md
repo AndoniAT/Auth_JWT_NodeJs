@@ -43,6 +43,11 @@ copy this string to the ACCESS_TOKEN_SECRET key in your .env
 Do it again and put the value in REFRESH_TOKEN_SECRET key
 
 
+<h6>== TEST DETAILS ==</h6>
+To charge the database for testing please run:
+
+> node src/api/services/tests/users_data_test.js
+
 <h6>== USER ROLES ==</h6>
 
 <table style="margin: 0 auto; width: fit-content; border: 1px solid black;">
