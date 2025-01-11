@@ -14,17 +14,14 @@ const credentials = require( './api/middlewares/CredentialsHeader.js' );
 const mongoose = require( 'mongoose' );
 const app = express();
 
-mongoose.connect( process.env.DATABASE_URL + process.env.DATABASE_NAME )
+// eslint-disable-next-line no-undef
+const env = process.env;
+
+mongoose.connect( env.DATABASE_URL + env.DATABASE_NAME )
     .then( () => {
-        console.log( `== Connected to ${process.env.DATABASE_NAME} ==` );
+        console.log( `== Connected to ${env.DATABASE_NAME} ==` );
     } )
     .catch( console.error );
-/*
-== Example for accepting specific origin ==
-app.use( cors( {
-    origin: 'http://localhost:5174'
-    } ) );
-    */
    
 // Handle options credentials
 // and fetch cookies credential requirement
@@ -39,13 +36,11 @@ app.use( express.json() ); // Parse json for body
 // Middleware for cookies
 app.use( cookieParser() );
 
-
 // serve static files
 // eslint-disable-next-line no-undef
 app.use( '/', express.static( path.join( __dirname, '/public' ) ) );
 
-// eslint-disable-next-line no-undef
-const PORT = process.env.PORT || 8001;
+const PORT = env.PORT || 8001;
 
 // APIs
 app.use( '/api/users/', usersRoute );
