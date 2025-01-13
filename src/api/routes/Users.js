@@ -7,7 +7,7 @@ const { authenticateToken } = require( '../middlewares/AuthMiddlewares' );
 const UserController = require( '../controllers/UserController' );
 const router = express.Router();
 
-router.get( '/', UserController.getAllUsers );
+router.get( '/', authenticateToken, UserController.getAllUsers );
 router.post( '/', UserController.createUser );
 router.delete( '/:id', authenticateToken, UserController.deleteUser );
 
