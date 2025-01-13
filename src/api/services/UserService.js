@@ -45,6 +45,25 @@ class UserService {
     }
 
     /**
+     * @param {String} email
+     * @param {String} refreshToken
+     * @returns {Promise<Object>} userFound
+     */
+    static async updateRefreshTokenUser( email, refreshToken ) {
+        let userFound = ( await User.where( 'email' ).equals( email ) )[ 0 ];
+        if( !userFound ) {
+            const err = new CustomError( 'User not found' );
+            err.status= 400;
+            throw err;
+        }
+
+        userFound.refreshToken = refreshToken;
+        await userFound.save();
+
+        return userFound.toObject();
+    }
+
+    /**
      * Update de user in database
      * @param {string} email
      * @param {Object} user Object with the properties we want to modify
@@ -59,13 +78,14 @@ class UserService {
         }
 
         for( let prop in user ) {
-            if ( Object.hasOwnProperty.call( userFound.toObject(), prop ) ) {
+            if ( User.schema.path( prop ) ) {
                 userFound[ prop ] = user[ prop ];
             }
         }
 
-        userFound.save();
-        return userFound;
+        await userFound.save();
+
+        return userFound.toObject();
     }
     
     /**

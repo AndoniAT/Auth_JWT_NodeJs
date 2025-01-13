@@ -54,7 +54,8 @@ class AuthHelpers {
      * @returns {string} the geneated token
      */
     static generateAccesToken( user ) {
-        const token = jwt.sign( { ... user }, this.#accesTokenSecret, { expiresIn: '60s' } );
+        const us = { email: user.email };
+        const token = jwt.sign( us, this.#accesTokenSecret, { expiresIn: '60s' } );
         return token;
         
     }
@@ -64,7 +65,8 @@ class AuthHelpers {
      * @returns {Promise<string>}
      */
     static async generateRefreshToken( user ) {
-        const refreshToken = jwt.sign( { ... user }, this.#refreshTokenSecret, { expiresIn: '1d' }  );
+        const us = { email: user.email };
+        const refreshToken = jwt.sign( us, this.#refreshTokenSecret, { expiresIn: '1d' }  );
         return refreshToken;
     }
 }

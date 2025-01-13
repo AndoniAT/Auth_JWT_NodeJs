@@ -25,12 +25,14 @@ class AuthController {
             if( await AuthHelpers.comparePasswords( password, user.password ) ) {
                 const accessToken = AuthHelpers.generateAccesToken( user );
                 const refreshToken = await AuthHelpers.generateRefreshToken( user ); 
+
                 // Saving refresh token with current user
-                await UserService.updateUserByEmail( email, { refreshToken } );
+                await UserService.updateRefreshTokenUser( email, refreshToken );
 
                 // Cookie as http only so it is not available in js
                 res.cookie( 'jwt', refreshToken, { httpOnly: true, sameSite: 'None', secure: true,
                     maxAge: 24 * 60 * 60  * 1000 } ); // 1 day as maxAge
+
                 delete user.password;
                 delete user.refreshToken;
 
