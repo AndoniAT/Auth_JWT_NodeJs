@@ -81,6 +81,7 @@ class AuthController {
 
             const accessToken = AuthHelpers.generateAccesToken( userFound );
             res.json( {
+                user: userFound,
                 accessToken
             } );
         } );
