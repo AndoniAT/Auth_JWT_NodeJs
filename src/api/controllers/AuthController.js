@@ -9,6 +9,7 @@ class AuthController {
      * Login the user in the application with the email and password
      */
     static async login( req, res ) {
+        const cookies = req.cookies;
         const { email, password } = req.body;
         if( !email || !password ) {
             return res.status( 400 ).json( {
@@ -26,18 +27,39 @@ class AuthController {
                 const accessToken = AuthHelpers.generateAccesToken( user );
                 const refreshToken = await AuthHelpers.generateRefreshToken( user ); 
 
+                let newRefreshTokenArray = !cookies?.jwt ? user.refreshToken : user.refreshToken.filter( rt => rt !== cookies.jwt );
+
+                if ( cookies?.jwt ) {
+
+                    /*
+                        If jwt exists in cookies
+                            1) User logs in but never uses the Refresh Token and does not logout
+                            2) Refresh Token is stolen
+                            3) If 1 and 2, reuse detection is needed to clear all Refresh Tokens when user logs in
+                    */
+                    const refreshToken = cookies.jwt;
+                    let foundToken = await UserService.getUserByRefreshToken( refreshToken );
+                    foundToken = foundToken ? foundToken.refreshToken : foundToken;
+
+                    // Detected refresh token reuse!
+                    if ( !foundToken ) {
+                        console.log( 'Attempted refresh token reuse at login!' );
+                        // clear out all previous refresh tokens
+                        newRefreshTokenArray = [];
+                    }
+
+                    res.clearCookie( 'jwt', { httpOnly: true, sameSite: 'None', secure: true } );
+                }
+
                 // Saving refresh token with current user
-                await UserService.updateRefreshTokenUser( email, refreshToken );
+                let rt = [ ...newRefreshTokenArray, refreshToken ];
+                await UserService.updateRefreshTokenUser( email, rt );
 
                 // Cookie as http only so it is not available in js
                 res.cookie( 'jwt', refreshToken, { httpOnly: true, sameSite: 'None', secure: true,
                     maxAge: 24 * 60 * 60  * 1000 } ); // 1 day as maxAge
 
-                delete user.password;
-                delete user.refreshToken;
-
                 res.status( 200 ).json( {
-                    user,
                     accessToken
                 } );
             } else {
@@ -56,6 +78,7 @@ class AuthController {
      */
     static async refreshToken( req, res ) {
         const cookies = req.cookies;
+
         if( !cookies?.jwt ) {
             return res.sendStatus( 401 );
         }
@@ -76,12 +99,8 @@ class AuthController {
                 return res.sendStatus( 403 );
             }
 
-            delete userFound.password;
-            delete userFound.refreshToken;
-
             const accessToken = AuthHelpers.generateAccesToken( userFound );
             res.json( {
-                user: userFound,
                 accessToken
             } );
         } );

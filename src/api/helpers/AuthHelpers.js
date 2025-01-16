@@ -54,8 +54,8 @@ class AuthHelpers {
      * @returns {string} the geneated token
      */
     static generateAccesToken( user ) {
-        const us = { email: user.email };
-        const token = jwt.sign( us, this.#accesTokenSecret, { expiresIn: '60s' } );
+        const us = { email: user.email, roles: user.roles };
+        const token = jwt.sign( { user: us }, this.#accesTokenSecret, { expiresIn: '10m' } );
         return token;
         
     }

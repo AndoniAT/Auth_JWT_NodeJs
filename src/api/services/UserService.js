@@ -19,7 +19,7 @@ class UserService {
      * @returns
      */
     static async getUserByEmail( email ) {
-        const user = ( await User.where( 'email' ).equals( email ) )[ 0 ];
+        const user = ( await User.where( 'email' ).equals( email ).exec() )[ 0 ];
         return user.toObject();
     }
 
@@ -29,7 +29,12 @@ class UserService {
      * @returns {Promise<Object>} the user
      */
     static async getUserByRefreshToken( token ) {
-        const user = ( await User.where( 'refreshToken' ).equals( token ) )[ 0 ];
+        const user = await User.findOne( {
+            'refreshToken' : {
+                $in: [ token ]
+            }
+        } ).exec();
+
         return user ? user.toObject() : null;
     }
     
@@ -46,7 +51,7 @@ class UserService {
 
     /**
      * @param {String} email
-     * @param {String} refreshToken
+     * @param {String[]} refreshToken
      * @returns {Promise<Object>} userFound
      */
     static async updateRefreshTokenUser( email, refreshToken ) {
