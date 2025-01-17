@@ -23,9 +23,9 @@ const UserSchema = new mongoose.Schema( {
     },
     email: {
         type: String,
-        minLenght: 10,
         required: true,
         lowercase: true,
+        minLength: 10,
     },
     createdAt: {
         type: Date,
