@@ -2,16 +2,26 @@
  * Author : Andoni ALONSO TORT
  */
 const CustomError = require( '../classes/curstomError' );
-const User = require( '../models/User' );
+const { User } = require( '../models/User' );
 
 class UserService {
     /**
      * Get all the users from the database
      * @returns a list of all users
      */
-    static async getAll() {
-        return await User.find( {} );    
+    static async getAll( projection = {} ) {
+        return await User.find( {}, projection );
     };
+
+    /**
+     *
+     * @param {String} id
+     * @returns {Promise<Object>}
+     */
+    static async getUserById( id ) {
+        const user = ( await User.where( '_id' ).equals( id ).exec() )[ 0 ];
+        return user?.toObject();
+    }
 
     /**
      * Find a user by email in database
@@ -20,7 +30,7 @@ class UserService {
      */
     static async getUserByEmail( email ) {
         const user = ( await User.where( 'email' ).equals( email ).exec() )[ 0 ];
-        return user.toObject();
+        return user?.toObject();
     }
 
     /**
@@ -35,7 +45,7 @@ class UserService {
             }
         } ).exec();
 
-        return user ? user.toObject() : null;
+        return user?.toObject();
     }
     
     /**
@@ -45,8 +55,15 @@ class UserService {
      */
     static async postUser( user ) {
         user = new User( user );
+        const foundUser = ( await User.where( 'email' ).equals( user.email ).exec() )[ 0 ];
+
+        if( foundUser ) {
+            const err = new CustomError( `User ${user.email} already exists`, 403 );
+            throw err;
+        }
+
         await user.save();
-        return user.toObject();
+        return user?.toObject();
     }
 
     /**
@@ -57,15 +74,14 @@ class UserService {
     static async updateRefreshTokenUser( email, refreshToken ) {
         let userFound = ( await User.where( 'email' ).equals( email ) )[ 0 ];
         if( !userFound ) {
-            const err = new CustomError( 'User not found' );
-            err.status= 400;
+            const err = new CustomError( 'User not found', 400 );
             throw err;
         }
 
         userFound.refreshToken = refreshToken;
         await userFound.save();
 
-        return userFound.toObject();
+        return userFound?.toObject();
     }
 
     /**
@@ -77,8 +93,7 @@ class UserService {
     static async updateUserByEmail( email, user ) {
         let userFound = ( await User.where( 'email' ).equals( email ) )[ 0 ];
         if( !userFound ) {
-            const err = new CustomError( 'User not found' );
-            err.status= 400;
+            const err = new CustomError( 'User not found', 400 );
             throw err;
         }
 
@@ -90,7 +105,7 @@ class UserService {
 
         await userFound.save();
 
-        return userFound.toObject();
+        return userFound?.toObject();
     }
     
     /**
@@ -101,8 +116,7 @@ class UserService {
     static async deleteUser( id ) {
         const user = ( await User.where( '_id' ).equals( id ) )[ 0 ];
         if( !user ) {
-            const error = new CustomError( 'Not found' );
-            error.status = 404;
+            const error = new CustomError( 'Not found', 404 );
             throw error;
         }
 

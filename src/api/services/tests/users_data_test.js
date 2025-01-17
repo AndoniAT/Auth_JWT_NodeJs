@@ -1,7 +1,7 @@
 console.log( '======= TEST USERS DATA =======' );
 require( 'dotenv' ).config();
 const mongoose = require( 'mongoose' );
-const User = require( '../../models/User' );
+const { User } = require( '../../models/User' );
 
 mongoose.connect( process.env.DATABASE_URL + process.env.DATABASE_NAME )
     .then( () => {

@@ -3,6 +3,7 @@
  */
 const UserService = require( '../services/UserService' );
 const AuthHelpers = require( '../helpers/AuthHelpers' );
+const CustomError = require( '../classes/curstomError' );
 
 class AuthController {
     /**
@@ -11,16 +12,19 @@ class AuthController {
     static async login( req, res ) {
         const cookies = req.cookies;
         const { email, password } = req.body;
+
         if( !email || !password ) {
-            return res.status( 400 ).json( {
-                message: 'email and password are required'
-            } );
+            const error = new CustomError( 'email and password are required', 400 );
+            const { status, message } = error.getDetails();
+            return res.status( status ).json( { message } );
         }
 
         try {
             const user = await UserService.getUserByEmail( email );
             if( !user ) {
-                res.status( 400 ).json( 'Cannot find user' );
+                const error = new CustomError( 'Cannot find user', 400 );
+                const { status, message } = error.getDetails();
+                return res.status( status ).json( { message } );
             }
             
             if( await AuthHelpers.comparePasswords( password, user.password ) ) {
@@ -63,13 +67,14 @@ class AuthController {
                     accessToken
                 } );
             } else {
-                res.status( 400 ).json( 'Bad password' );
+                const error = new CustomError( 'Bad password', 400 );
+                const { status, message } = error.getDetails();
+                res.status( status ).json( { message } );
             }
 
         } catch( e ) {
-            const status = e?.status || 500;
-            const msg = { Error : e?.message || 'Error Server' };
-            res.status( status ).json( msg );
+            const { status, message } = CustomError.getError( e );
+            res.status( status ).json( { message } );
         }
     }
 
@@ -116,20 +121,22 @@ class AuthController {
             return res.sendStatus( 204 ); // No content
         }
 
-        const refreshToken = cookies.jwt;
+        try {
+            const refreshToken = cookies.jwt;
 
-        const userFound = await UserService.getUserByRefreshToken( refreshToken );
-        if( !userFound ) {
-            // If there was not a user but we have a token in cookies, then clear cookie
-            res.clearCookie( 'jwt', { httpOnly: true } );
-            return res.sendStatus( 204 ); // No content
+            const userFound = await UserService.getUserByRefreshToken( refreshToken );
+            if( userFound ) {
+                // Delete refresh token in DB
+                const rt = userFound.refreshToken.filter( token => token !== refreshToken );
+                await UserService.updateRefreshTokenUser( userFound.email, rt );
+            }
+
+            res.clearCookie( 'jwt', { httpOnly: true, sameSite: 'None', secure: true } );
+            res.sendStatus( 204 );
+        } catch( e ) {
+            const { status, message } = CustomError.getError( e );
+            res.status( status ).json( { message } );
         }
-
-        // Delete refresh token in DB
-        const rt = userFound.refreshToken.filter( token => token !== refreshToken );
-        await UserService.updateRefreshTokenUser( userFound.email, rt );
-        res.clearCookie( 'jwt', { httpOnly: true, sameSite: 'None', secure: true } ); // secure: true - only serves on https
-        res.sendStatus( 204 );
     }
 }
 
