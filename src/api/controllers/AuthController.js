@@ -126,7 +126,8 @@ class AuthController {
         }
 
         // Delete refresh token in DB
-        await UserService.updateUserByEmail( userFound.email, { refreshToken: null } );
+        const rt = userFound.refreshToken.filter( token => token !== refreshToken );
+        await UserService.updateRefreshTokenUser( userFound.email, rt );
         res.clearCookie( 'jwt', { httpOnly: true, sameSite: 'None', secure: true } ); // secure: true - only serves on https
         res.sendStatus( 204 );
     }
