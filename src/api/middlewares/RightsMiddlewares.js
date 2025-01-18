@@ -16,13 +16,13 @@ async function isMeOrAdmin( req, res, next ) {
         }
 
         // Is admin or is me
-        req.session.isMe = userFound._id.toString() === id;
+        user.isMe = userFound._id.toString() === id;
     
-        if( req.session.isAdmin || req.session.isMe ) {
+        if( user.isAdmin || user.isMe ) {
             return next();
         }
     
-        res.status( 401 ).json( 'Unauthorized: You are not allowed to delete this user' );
+        res.status( 401 ).json( 'Unauthorized: You are not allowed to do this action' );
     } catch( e ) {
         const { status, msg } = CustomError.getError( e );
         res.status( status ).json( msg );
