@@ -36,6 +36,14 @@ class UserController {
                 return res.status( 400 ).json( error_validation.errors );
             }
 
+            if( !user.confirmPassword ) {
+                return res.status( 400 ).json( { confirmPassword: { message: 'There must be a confirmPassword attribute' } } );
+            }
+
+            if( user.confirmPassword !== user.password ) {
+                return res.status( 400 ).json( { confirmPassword: { message: 'The passwords don\'t match' } } );
+            }
+
             const pwd = await AuthHelpers.generateHashPwd( user.password );
             user.password = pwd; // Set hashed password
             const newUser = await UserService.postUser( user );
