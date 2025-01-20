@@ -17,6 +17,22 @@ class UserController {
         let users = await UserService.getAll( projection );
         res.status( 200 ).json( users );
     }
+
+    /**
+     * Get user from db
+     */
+    static async getUser( req, res ) {
+        let projection = req.session.user.isAdmin ? {} : { email : 1, firstname: 1, lastname: 1, roles: 1 };
+        const { id } = req.params;
+
+        let user = await UserService.getUserById( id, projection );
+
+        if( user ) {
+            return res.status( 200 ).json( user );   
+        }
+
+        res.sendStatus( 400 );
+    }
     
     /**
      * Call postUser function from controller to create a new user

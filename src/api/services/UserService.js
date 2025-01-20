@@ -10,6 +10,7 @@ class UserService {
      * @returns a list of all users
      */
     static async getAll( projection = {} ) {
+        projection = { ...projection, password: 0, refreshToken: 0 };
         return await User.find( {}, projection );
     };
 
@@ -18,8 +19,15 @@ class UserService {
      * @param {String} id
      * @returns {Promise<Object>}
      */
-    static async getUserById( id ) {
-        const user = ( await User.where( '_id' ).equals( id ).exec() )[ 0 ];
+    static async getUserById( id, projection = {} ) {
+        projection = { ...projection };
+        let projection_str = Object.keys( projection ).join( ' ' );
+
+        const user = ( await User.where( '_id' ).equals( id ).
+            select( projection_str )
+            .select( '-password -refreshToken' )
+            .exec() )[ 0 ];
+
         return user?.toObject();
     }
 

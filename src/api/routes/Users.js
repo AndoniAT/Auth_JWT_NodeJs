@@ -9,6 +9,7 @@ const { isMeOrAdmin } = require( '../middlewares/RightsMiddlewares' );
 const router = express.Router();
 
 router.get( '/', authenticateToken, UserController.getAllUsers );
+router.get( '/:id', authenticateToken, UserController.getUser );
 router.post( '/', noAuthenticateToken, UserController.createUser );
 router.delete( '/:id', authenticateToken, isMeOrAdmin, UserController.deleteUser );
 
