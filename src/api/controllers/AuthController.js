@@ -3,7 +3,7 @@
  */
 const UserService = require( '../services/UserService' );
 const AuthHelpers = require( '../helpers/AuthHelpers' );
-const CustomError = require( '../classes/curstomError' );
+const CustomError = require( '../classes/customError' );
 
 class AuthController {
     /**
@@ -42,11 +42,10 @@ class AuthController {
                             3) If 1 and 2, reuse detection is needed to clear all Refresh Tokens when user logs in
                     */
                     const refreshToken = cookies.jwt;
-                    let foundToken = await UserService.getUserByRefreshToken( refreshToken );
-                    foundToken = foundToken ? foundToken.refreshToken : foundToken;
+                    const foundUserToken = await UserService.getUserByRefreshToken( refreshToken );
 
                     // Detected refresh token reuse!
-                    if ( !foundToken ) {
+                    if ( !foundUserToken ) {
                         console.log( 'Attempted refresh token reuse at login!' );
                         // clear out all previous refresh tokens
                         newRefreshTokenArray = [];

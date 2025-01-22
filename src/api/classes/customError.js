@@ -14,7 +14,15 @@ class CustomError extends Error {
 
     static getError( e ) {
         const status = e?.status || 500;
-        const message = e?.message || 'Error Server';
+        let message = 'Error Server';
+
+        if( e?.message ) {
+            try {
+                message = JSON.parse( e.message );
+            } catch {
+                message = e.message;
+            }
+        }
 
         return {
             status, message

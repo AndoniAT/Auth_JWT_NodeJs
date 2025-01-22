@@ -1,11 +1,10 @@
-const CustomError = require( '../classes/curstomError' );
-const AuthHelpers = require( '../helpers/AuthHelpers' );
-const { User } = require( '../models/User' );
-const UserService = require( '../services/UserService' );
-
 /**
  * Author : Andoni ALONSO TORT
  */
+
+const CustomError = require( '../classes/customError' );
+const UserService = require( '../services/UserService' );
+
 class UserController {
 
     /**
@@ -45,23 +44,16 @@ class UserController {
             delete user.roles;
 
             // Verify attributes
-            let user_validated = new User( user );
-            const error_validation = user_validated.validateSync();
-
-            if( error_validation ) {
-                return res.status( 400 ).json( error_validation.errors );
-            }
-
             if( !user.confirmPassword ) {
-                return res.status( 400 ).json( { confirmPassword: { message: 'There must be a confirmPassword attribute' } } );
+                const message = { confirmPassword: { message: 'There must be a confirmPassword attribute' } };
+                return res.status( 400 ).json( { message } );
             }
 
             if( user.confirmPassword !== user.password ) {
-                return res.status( 400 ).json( { confirmPassword: { message: 'The passwords don\'t match' } } );
+                const message = { confirmPassword: { message: 'The passwords don\'t match' } };
+                return res.status( 400 ).json( { message } );
             }
 
-            const pwd = await AuthHelpers.generateHashPwd( user.password );
-            user.password = pwd; // Set hashed password
             const newUser = await UserService.postUser( user );
             res.status( 201 ).json( newUser );
         } catch ( e ) {
@@ -70,6 +62,52 @@ class UserController {
         }
     }
     
+    /**
+     * Call updateUser function from controller to update a user by id
+     * @returns the modified user
+     */
+    static async updateUser( req, res ) {
+        const { id } = req.params;
+        const userSession = req.session;
+
+        try {
+            let {
+                firstname,
+                lastname,
+                email,
+                password,
+                confirmPassword,
+                roles
+            } = req.body;
+
+            if( password ) {
+                if( !confirmPassword ) {
+                    const message = { confirmPassword: { message: 'There must be a confirmPassword attribute' } };
+                    return res.status( 400 ).json( { message } );
+                }
+
+                if( password !== confirmPassword ) {
+                    const message = { confirmPassword: { message: 'The passwords don\'t match' } };
+                    return res.status( 400 ).json( { message } );
+                }
+            }
+
+            const user = { firstname, lastname, email, password, roles, confirmPassword };
+
+            if( !userSession.user.isAdmin ) {
+                // Normal user cannot modify any roles
+                delete user.roles;
+            }
+
+            const userModif = await UserService.updateUserById( id, user );
+            res.status( 200 ).json( userModif );
+
+        } catch( e ) {
+            const { status, message } = CustomError.getError( e );
+            res.status( status ).json( { message } );
+        }
+    }
+
     /**
      * Call deleteUser function from controller to delete a user by id
      * @returns the deleted user

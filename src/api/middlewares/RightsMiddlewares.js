@@ -1,5 +1,5 @@
 const UserService = require( '../services/UserService' );
-const CustomError = require( '../classes/curstomError' );
+const CustomError = require( '../classes/customError' );
 
 /**
  * Verify is the request is called by the same user to do actions to itself

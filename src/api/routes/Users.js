@@ -9,8 +9,10 @@ const { isMeOrAdmin } = require( '../middlewares/RightsMiddlewares' );
 const router = express.Router();
 
 router.get( '/', authenticateToken, UserController.getAllUsers );
-router.get( '/:id', authenticateToken, UserController.getUser );
 router.post( '/', noAuthenticateToken, UserController.createUser );
+
+router.get( '/:id', authenticateToken, UserController.getUser );
+router.put( '/:id', authenticateToken, isMeOrAdmin, UserController.updateUser );
 router.delete( '/:id', authenticateToken, isMeOrAdmin, UserController.deleteUser );
 
 module.exports = router;
