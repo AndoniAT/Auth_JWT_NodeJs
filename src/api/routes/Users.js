@@ -11,6 +11,7 @@ const router = express.Router();
 router.get( '/', authenticateToken, UserController.getAllUsers );
 router.post( '/', noAuthenticateToken, UserController.createUser );
 
+/* Id could be _id, username or email*/
 router.get( '/:id', authenticateToken, UserController.getUser );
 router.put( '/:id', authenticateToken, isMeOrAdmin, UserController.updateUser );
 router.delete( '/:id', authenticateToken, isMeOrAdmin, UserController.deleteUser );

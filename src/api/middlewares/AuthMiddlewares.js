@@ -10,12 +10,34 @@ function authenticateToken( req, res, next ) {
         return res.sendStatus( 401 );
     }
 
-    AuthHelpers.verifyToken( token, ( err, decoded_session ) => {
+    AuthHelpers.verifyToken( token, async ( err, decoded_session ) => {
         if( err ) {
             return res.sendStatus( 403 );
         }
 
-        decoded_session.user.isAdmin = decoded_session.user.roles.includes( Roles.admin );
+        const userSession = decoded_session.user;
+        const userFound = await UserService.getUser( userSession.username );
+
+        if( !userFound ) {
+            return res.sendStatus( 403 );
+        }
+
+        if( userFound ) {
+            const emailChanged = ( userFound.email !== userSession.email );
+            const usernameChanged = ( userFound.username !== userSession.username );
+            if( emailChanged || usernameChanged ) {
+                return res.sendStatus( 403 );
+            }
+        }
+
+        decoded_session.user = {
+            ...userSession,
+
+            // Set roles of user real data in db
+            roles: userFound.roles,
+            isAdmin: userFound.roles.includes( Roles.admin )
+        };
+
         req.session = decoded_session;
         next(); 
     } );

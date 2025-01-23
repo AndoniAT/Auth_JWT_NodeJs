@@ -11,11 +11,10 @@ class AuthHelpers {
     // eslint-disable-next-line no-undef
     static #refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
 
-
     /**
      * Hash a given password to store in database
-     * @param {string} pwd 
-     * @returns {Promise<string>} Hashed password
+     * @param {String} pwd
+     * @returns {Promise<String>} Hashed password
      */
     static async generateHashPwd( pwd ) {
         const salt = await bcrypt.genSalt( 10 ); // 10 by detault
@@ -25,8 +24,8 @@ class AuthHelpers {
 
     /**
      * Compare a password string with a hash
-     * @param {string} pwd 
-     * @param {string} hash 
+     * @param {String} pwd
+     * @param {String} hash
      * @returns 
      */
     static async comparePasswords( pwd, hash ) {
@@ -35,14 +34,14 @@ class AuthHelpers {
     }
 
     /**
-     * @param {string} token
+     * @param {String} token
      */
     static verifyToken( token, cb ) {
         jwt.verify( token, this.#accesTokenSecret, cb );
     }
     
     /**
-     * @param {string} refreshToken
+     * @param {String} refreshToken
      */
     static verifyRefreshToken( refreshToken, cb ) {
         jwt.verify( refreshToken, this.#refreshTokenSecret, cb );
@@ -51,10 +50,10 @@ class AuthHelpers {
     /**
      * Sign jwt
      * @param {Object} user 
-     * @returns {string} the geneated token
+     * @returns {String} the geneated token
      */
     static generateAccesToken( user ) {
-        const us = { email: user.email, roles: user.roles };
+        const us = { username: user.username, email: user.email, roles: user.roles };
         const token = jwt.sign( { user: us }, this.#accesTokenSecret, { expiresIn: '10m' } );
         return token;
         
@@ -65,7 +64,7 @@ class AuthHelpers {
      * @returns {Promise<string>}
      */
     static async generateRefreshToken( user ) {
-        const us = { email: user.email };
+        const us = { username: user.username, email: user.email };
         const refreshToken = jwt.sign( us, this.#refreshTokenSecret, { expiresIn: '1d' }  );
         return refreshToken;
     }

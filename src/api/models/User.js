@@ -6,6 +6,11 @@ const ROLES = {
 };
 
 const UserSchema = new mongoose.Schema( {
+    username: {
+        type: String,
+        required: true,
+        minLength: 3
+    },
     firstname: {
         type: String,
         required: true,
@@ -39,10 +44,13 @@ const UserSchema = new mongoose.Schema( {
     },
     roles: {
         type: [Number],
-        default: [ ROLES.user ],
+        default: [ROLES.user],
         validate: {
-            validator: roles => Object.values( ROLES ).some( role => roles.includes( role ) ),
-            message: props => `${props.value} is not a valid role`
+            validator: roles => {
+                const validRoles = Object.values( ROLES );
+                return roles.includes( ROLES.user ) && roles.every( role => validRoles.includes( role ) );
+            },
+            message: props => `Error in roles : "${props.value}". Roles must contain user rights "${ROLES.user}" and add only admin rights "${ROLES.admin}"`
         }
     },
     refreshToken: {

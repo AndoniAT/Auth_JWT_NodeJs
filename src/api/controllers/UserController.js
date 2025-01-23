@@ -3,45 +3,38 @@
  */
 
 const CustomError = require( '../classes/customError' );
+const { Roles } = require( '../models/User' );
 const UserService = require( '../services/UserService' );
 
 class UserController {
 
-    /**
-     * Call getAll function from controller to get all the users
-     * @returns a list of all users
-     */
     static async getAllUsers( req, res ) {
-        let projection = req.session.user.isAdmin ? {} : { email : 1, firstname: 1, lastname: 1 };
+        const userSession = req.session.user;
+        let projection = userSession.isAdmin ? null : { username: 1, firstname: 1, lastname: 1 };
         let users = await UserService.getAll( projection );
         res.status( 200 ).json( users );
     }
 
-    /**
-     * Get user from db
-     */
     static async getUser( req, res ) {
-        let projection = req.session.user.isAdmin ? {} : { email : 1, firstname: 1, lastname: 1, roles: 1 };
+        const userSession = req.session.user;
+        let projection = userSession.isAdmin ? {} : { username: 1, email : 1, firstname: 1, lastname: 1, roles: 1 };
         const { id } = req.params;
 
-        let user = await UserService.getUserById( id, projection );
+        let user = await UserService.getUser( id, projection );
 
         if( user ) {
             return res.status( 200 ).json( user );   
         }
 
-        res.sendStatus( 400 );
+        res.sendStatus( 404 );
     }
     
-    /**
-     * Call postUser function from controller to create a new user
-     * @returns the new user
-     */
     static async createUser( req, res ) {
         const user = req.body;
         try {
             // User cannot assign own roles
             delete user.roles;
+            user.roles = [ Roles.user ];
 
             // Verify attributes
             if( !user.confirmPassword ) {
@@ -54,24 +47,21 @@ class UserController {
                 return res.status( 400 ).json( { message } );
             }
 
-            const newUser = await UserService.postUser( user );
+            const newUser = await UserService.createUser( user );
             res.status( 201 ).json( newUser );
         } catch ( e ) {
             const { status, message } = CustomError.getError( e );
             res.status( status ).json( { message } );
         }
     }
-    
-    /**
-     * Call updateUser function from controller to update a user by id
-     * @returns the modified user
-     */
+
     static async updateUser( req, res ) {
+        const userSession = req.session.user;
         const { id } = req.params;
-        const userSession = req.session;
 
         try {
             let {
+                username,
                 firstname,
                 lastname,
                 email,
@@ -92,15 +82,34 @@ class UserController {
                 }
             }
 
-            const user = { firstname, lastname, email, password, roles, confirmPassword };
+            let body = { username, firstname, lastname, email, password, roles, confirmPassword };
 
-            if( !userSession.user.isAdmin ) {
+            if( !userSession.isAdmin ) {
                 // Normal user cannot modify any roles
-                delete user.roles;
+                delete body.roles;
             }
 
-            const userModif = await UserService.updateUserById( id, user );
-            res.status( 200 ).json( userModif );
+            const userBefore = await UserService.getUser( id, { username: 1, email: 1, roles: 1 } );
+
+            let user = await UserService.updateUser( id, body );
+
+
+            const usernameHasChanged = ( userBefore.username !== user.username );
+            const emailHasChanged = ( userBefore.email !== user.email );
+            const rolesHasChanged = !( userBefore?.roles.every( r => user.roles.includes( r ) ) && user.roles.every( r => userBefore.roles.includes( r ) ) );
+
+            // Clear cookie is is my session and sensitive information have changed
+            if( ( usernameHasChanged || emailHasChanged || rolesHasChanged ) ) {
+                await UserService.updateRefreshTokenUser( user.username, [] );
+
+                if( userSession.isMe ) {
+                    res.clearCookie( 'jwt', { httpOnly: true, sameSite: 'None', secure: true } );
+                }
+            }
+
+            let projection = userSession.isAdmin ? {} : { username: 1, email : 1, firstname: 1, lastname: 1, roles: 1 };
+            user = await UserService.getUser( id, projection );
+            res.status( 200 ).json( user );
 
         } catch( e ) {
             const { status, message } = CustomError.getError( e );
@@ -108,17 +117,14 @@ class UserController {
         }
     }
 
-    /**
-     * Call deleteUser function from controller to delete a user by id
-     * @returns the deleted user
-     */
     static async deleteUser( req, res ) {
+        const userSession = req.session.user;
         const { id } = req.params;
 
         try {
             const userDeleted = await UserService.deleteUser( id );
 
-            if( req.session.isMe ){
+            if( userSession.isMe ){
                 res.clearCookie( 'jwt', { httpOnly: true, sameSite: 'None', secure: true } );
             }
             

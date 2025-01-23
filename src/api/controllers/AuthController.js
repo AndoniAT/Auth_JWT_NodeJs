@@ -11,22 +11,24 @@ class AuthController {
      */
     static async login( req, res ) {
         const cookies = req.cookies;
-        const { email, password } = req.body;
+        const { username, password } = req.body;
 
-        if( !email || !password ) {
-            const error = new CustomError( 'email and password are required', 400 );
+        if( !username || !password ) {
+            const error = new CustomError( 'username and password are required', 400 );
             const { status, message } = error.getDetails();
             return res.status( status ).json( { message } );
         }
 
         try {
-            const user = await UserService.getUserByEmail( email );
+
+            const user = await UserService.getUser( username );
+
             if( !user ) {
                 const error = new CustomError( 'Cannot find user', 400 );
                 const { status, message } = error.getDetails();
                 return res.status( status ).json( { message } );
             }
-            
+
             if( await AuthHelpers.comparePasswords( password, user.password ) ) {
                 const accessToken = AuthHelpers.generateAccesToken( user );
                 const refreshToken = await AuthHelpers.generateRefreshToken( user ); 
@@ -56,7 +58,7 @@ class AuthController {
 
                 // Saving refresh token with current user
                 let rt = [ ...newRefreshTokenArray, refreshToken ];
-                await UserService.updateRefreshTokenUser( email, rt );
+                await UserService.updateRefreshTokenUser( username, rt );
 
                 // Cookie as http only so it is not available in js
                 res.cookie( 'jwt', refreshToken, { httpOnly: true, sameSite: 'None', secure: true,
@@ -127,7 +129,7 @@ class AuthController {
             if( userFound ) {
                 // Delete refresh token in DB
                 const rt = userFound.refreshToken.filter( token => token !== refreshToken );
-                await UserService.updateRefreshTokenUser( userFound.email, rt );
+                await UserService.updateRefreshTokenUser( userFound.username, rt );
             }
 
             res.clearCookie( 'jwt', { httpOnly: true, sameSite: 'None', secure: true } );

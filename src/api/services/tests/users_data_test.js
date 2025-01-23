@@ -2,8 +2,7 @@ console.log( '======= TEST USERS DATA =======' );
 require( 'dotenv' ).config();
 const mongoose = require( 'mongoose' );
 const { User } = require( '../../models/User' );
-const AuthHelpers = require( '../../helpers/AuthHelpers' );
-const UserHelpers = require( '../../helpers/UserHelpers' );
+const UserService = require( '../UserService' );
 
 mongoose.connect( process.env.DATABASE_URL + process.env.DATABASE_NAME )
     .then( () => {
@@ -13,6 +12,7 @@ mongoose.connect( process.env.DATABASE_URL + process.env.DATABASE_NAME )
 
 const mongoUsers = [
     new User( {
+        username: 'User1',
         firstname: 'admin',
         lastname: 'ADMIN',
         password: 'Admin?123',
@@ -20,25 +20,15 @@ const mongoUsers = [
         roles: [ 1000, 2000 ]
     } ),
     new User( {
-        firstname: 'User1',
+        username: 'User2',
+        firstname: 'User 2',
         lastname: 'Example',
         password: 'Admin?123',
-        email: 'user1@example.com'
+        email: 'user2@example.com'
     } )
 ];
 
-mongoUsers.forEach( us => {
-    User.where( 'email' ).equals( us.email )
-        .then( async ( res ) => {
-            if( res.length == 0 ) {
-                if( !UserHelpers.verifyPasswordRules( us.password ) ) {
-                    throw new Error( UserHelpers.password_rules_message );
-                }
-
-                us.password = await AuthHelpers.generateHashPwd( us.password );
-                us.save()
-                    .then( user => console.log( 'User saved', user ) );
-            }
-        } )
-        .catch( console.error );
+mongoUsers.forEach( async ( us ) => {
+    const newUser = await UserService.createUser( us );
+    console.log( 'User saved : ', newUser );
 } );
