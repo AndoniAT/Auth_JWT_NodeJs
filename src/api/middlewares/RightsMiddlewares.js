@@ -20,8 +20,7 @@ async function isMeOrAdmin( req, res, next ) {
 
         // Is admin or is me
         const { _id, username, email } = userFound;
-        userSession.isMe = ( _id.toString() === id ) || ( username === userSession.username ) || ( email === userSession.email );
-
+        userSession.isMe = ( _id.toString() === userSession._id ) || ( username === userSession.username ) || ( email === userSession.email );
         if( userSession.isAdmin || userSession.isMe ) {
             return next();
         }

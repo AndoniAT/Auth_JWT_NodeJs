@@ -32,6 +32,7 @@ function authenticateToken( req, res, next ) {
 
         decoded_session.user = {
             ...userSession,
+            _id: userFound._id,
 
             // Set roles of user real data in db
             roles: userFound.roles,
