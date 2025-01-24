@@ -139,6 +139,14 @@ class UserService {
         return await User.deleteOne( { _id: user._id } );
     }
 
+    static async getAdminCount() {
+        return await User.find( {
+            roles: {
+                $in: [ 1000 ]
+            }
+        } ).countDocuments();
+    }
+
     /**
      * PRIVATE
      */

@@ -3,6 +3,7 @@
  */
 
 const CustomError = require( '../classes/customError' );
+const { Roles } = require( '../models/User' );
 
 class UserHelpers {
 
@@ -61,6 +62,10 @@ class UserHelpers {
         if( !user ) {
             throw new CustomError( UserHelpers.user_not_found_message, 404 );
         }
+    }
+
+    static hasAdminRole( roles ) {
+        return roles.includes( Roles.admin );
     }
 }
 

@@ -3,6 +3,7 @@
  */
 
 const CustomError = require( '../classes/customError' );
+const UserHelpers = require( '../helpers/UserHelpers' );
 const { Roles } = require( '../models/User' );
 const UserService = require( '../services/UserService' );
 
@@ -122,14 +123,22 @@ class UserController {
         const { id } = req.params;
 
         try {
-            const userDeleted = await UserService.deleteUser( id );
+            const admins = await UserService.getAdminCount();
+            const user = await UserService.getUser( id, { roles: 1 } );
 
-            if( userSession.isMe ){
+            if( UserHelpers.hasAdminRole( user.roles ) && admins == 1 ) {
+                let message = 'You cannot delete the unique admin user';
+                return res.status( 401 ).json( { message } );
+            }
+
+            const userDeleted = await UserService.deleteUser( id );
+            if( userSession.isMe ) {
                 res.clearCookie( 'jwt', { httpOnly: true, sameSite: 'None', secure: true } );
             }
             
             res.status( 200 ).json( userDeleted );
         } catch( e ) {
+            console.log( e );
             const { status, message } = CustomError.getError( e );
             res.status( status ).json( { message } );
         }
