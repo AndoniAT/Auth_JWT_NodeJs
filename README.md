@@ -36,20 +36,16 @@ Install Eslint & Error Lens packages in VS Code to highlighting of errors in fil
 > npm run devStart
 
 Another packages installed : 
-<ul>
-    <li>
-        <i>bcrypt :</i> To hash and compare paswords.
-    </li>
-    <li>
-        <i>jsonwebtoken :</i> To generate and compare token between server & client.
-    </li>
-    <li>
-        <i>cookie-parser :</i> Parse Cookie header and populate req.cookies with an object keyed by the cookie names.
-    </li>
-    <li>
-      <i>mongoose :</i> Mongoose is a MongoDB object modeling tool designed to work in an asynchronous environment. 
-    </li>
-</ul>
+- <i>bcrypt :</i> To hash and compare paswords.
+- <i>jsonwebtoken :</i> To generate and compare token between server & client.
+- <i>cookie-parser :</i> Parse Cookie header and populate req.cookies with an object keyed by the cookie names.
+- <i>mongoose :</i> Mongoose is a MongoDB object modeling tool designed to work in an asynchronous environment. 
+- <i>[mocha](https://mochajs.org) :</i> Mocha is a feature-rich JavaScript test framework running on Node.js and in the browser, making asynchronous testing simple and fun. Mocha tests run serially, allowing for flexible and accurate reporting, while mapping uncaught exceptions to the correct test cases.
+- <i>[chai](https://www.chaijs.com) :</i> Chai is a BDD / TDD assertion library for node and the browser that can be delightfully paired with any javascript testing framework.
+- <i>[chai-http](https://www.chaijs.com/plugins/chai-http/) :</i> Chai HTTP provides an interface for live integration testing via superagent. To do this, you must first construct a request to an application or url.
+
+Upon construction you are provided a chainable api that allows you to specify the http VERB request (get, post, etc) that you wish to invoke.
+
 
 To generate our ACCESS_TOKEN_SECRET :
 > node
