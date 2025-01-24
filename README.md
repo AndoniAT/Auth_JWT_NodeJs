@@ -1,10 +1,26 @@
-# Auth_JWT_NodeJs
+<h1 class="text-center" style="background-color: rgb(226 232 240 / var(--tw-bg-opacity, 1));
+ padding: 5px;"> Authentication JWT Login in NodeJs
+ <br/>
+ <img src="./src/nodejs.png" height="60px"/>
+ </h1>
+<h4>Author : Andoni ALONSO TORT</h4>
 Implementing authentication and JWT in node js.
 
-Start Node.js project :
+Node.js application designed as a foundation for any project requiring authentication and user role management on the server side. This project provides a robust and scalable structure with ready-to-use features.
+
+- ✅ User authentication via JWT (JSON Web Tokens) for secure sessions.
+- ✅ A role management system to define specific permissions and access.
+- ✅ A RESTful architecture for creating, reading, updating, and deleting users and their roles.
+- ✅ Error handling with clear responses for unauthorized or invalid actions.
+- ✅ Integration with a database for secure storage of user information (password hashing with bcrypt).
+- ✅ A modular and extensible structure to easily integrate new features.
+
+This back-end is designed to work seamlessly with the [React front-end project](https://github.com/AndoniAT/Auth_Login_React), offering a complete and secure solution for any application requiring authentication and role management.
+
+<b>Start Node.js project :</b>
 > npm init
 
-Setting eslint config :
+<b>Setting eslint config :</b>
 > npm init @eslint/config
 
 eslint.config.mjs has been generated 
@@ -13,10 +29,10 @@ See [eslint page](https://eslint.org/docs/latest/) for more information.
 
 Install Eslint & Error Lens packages in VS Code to highlighting of errors in files.
 
-Nodemon package has been include for running dev environnment : 
+<b>Nodemon package has been include for running dev environnment : </b>
 > npm i --save-dev nodemon
 
-To run it, please use :
+<b>To run it, please use :</b>
 > npm run devStart
 
 Another packages installed : 
