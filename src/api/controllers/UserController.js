@@ -92,6 +92,18 @@ class UserController {
 
             const userBefore = await UserService.getUser( id, { username: 1, email: 1, roles: 1 } );
 
+            // Cannot remove last admin
+            if( body.roles ) {
+                const admins = await UserService.getAdminCount();
+                
+                if( !UserHelpers.hasAdminRole( body.roles ) &&
+                    UserHelpers.hasAdminRole( userBefore.roles ) && 
+                    admins == 1 ) {
+                    let message = 'You cannot remove admin rights because is the last admin';
+                    return res.status( 401 ).json( { message } );
+                }
+            }
+
             let user = await UserService.updateUser( id, body );
 
 
