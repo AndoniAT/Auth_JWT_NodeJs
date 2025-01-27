@@ -49,3 +49,5 @@ app.use( '/api/auth/', authRoute );
 app.listen( PORT, () => {
     console.log( `Application listening in port: ${PORT}` );
 } );
+
+module.exports = app;

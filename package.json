@@ -6,16 +6,19 @@
   "scripts": {
     "devStart": "nodemon index.js",
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "cross-env NODE_ENV=test mocha 'test/' --recursive --exit"
   },
   "author": "Andoni ALONSO TORT",
   "license": "ISC",
   "dependencies": {
+    "@types/chai": "^5.0.1",
+    "@types/chai-http": "^4.2.4",
     "bcrypt": "^5.1.1",
-    "chai": "^5.1.2",
-    "chai-http": "^5.1.1",
+    "chai": "^4.5.0",
+    "chai-http": "^4.4.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
