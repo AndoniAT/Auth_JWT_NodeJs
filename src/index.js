@@ -3,8 +3,26 @@
  */
 
 const express = require( 'express' );
-require( 'dotenv' ).config();
 const path = require( 'path' );
+
+// DOTENV File
+const getDotEnvPath = ( env ) => {
+    console.log( 'Environment : ', env );
+    if ( env == 'TEST' ) {
+        return '.env.test';
+    }
+
+    if ( env == 'DEV' ) {
+        return '.env.development';
+    }
+    return '.env';
+};
+
+require( 'dotenv' )
+    .config( {
+        path: path.resolve( process.cwd(), getDotEnvPath( process.env.NODE_ENV?.toUpperCase() ) )
+    } );
+
 const usersRoute = require( './api/routes/Users.js' );
 const authRoute = require( './api/routes/Auth.js' );
 const cors = require( 'cors' );

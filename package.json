@@ -4,9 +4,10 @@
   "description": "Authentication & JWT project",
   "main": "./src/index.js",
   "scripts": {
-    "devStart": "nodemon index.js",
+    "devStart": "cross-env NODE_ENV=dev nodemon index.js",
     "start": "node index.js",
-    "test": "cross-env NODE_ENV=test mocha 'test/' --recursive --exit"
+    "testHelpers": "cross-env NODE_ENV=test mocha 'test/helpers/' --recursive --exit",
+    "testServices": "cross-env NODE_ENV=test mocha 'test/services/' --recursive --exit"
   },
   "author": "Andoni ALONSO TORT",
   "license": "ISC",

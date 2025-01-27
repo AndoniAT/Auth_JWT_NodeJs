@@ -1,3 +1,8 @@
+require( '../../src/index' );
+
+process.env.NODE_ENV = 'test';
+console.log( 'Test userHelpers => Node env :', process.env.NODE_ENV );
+
 const { describe, it } = require( 'mocha' );
 const UserHelpers = require( '../../src/api/helpers/UserHelpers' );
 const CustomError = require( '../../src/api/classes/customError' );

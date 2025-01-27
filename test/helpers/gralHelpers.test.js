@@ -1,3 +1,8 @@
+require( '../../src/index' );
+
+process.env.NODE_ENV = 'test';
+console.log( 'Test GralHelpers => Node env :', process.env.NODE_ENV );
+
 const { describe, it } = require( 'mocha' );
 const GralHelpers = require( '../../src/api/helpers/GralHelpers' );
 const CustomError = require( '../../src/api/classes/customError' );

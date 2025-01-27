@@ -1,9 +1,9 @@
 /**
  * Author : Andoni ALONSO TORT
  */
-require( 'dotenv' ).config();
+require( '../../src/index' );
 process.env.NODE_ENV = 'test';
-console.log( 'Node env :', process.env.NODE_ENV );
+console.log( 'Test authHelpers => Node env :', process.env.NODE_ENV );
 
 const AuthHelpers = require( '../../src/api/helpers/AuthHelpers' );
 const CustomError = require( '../../src/api/classes/customError' );
