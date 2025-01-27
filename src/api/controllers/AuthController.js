@@ -31,7 +31,7 @@ class AuthController {
 
             if( await AuthHelpers.comparePasswords( password, user.password ) ) {
                 const accessToken = AuthHelpers.generateAccesToken( user );
-                const refreshToken = await AuthHelpers.generateRefreshToken( user ); 
+                const refreshToken = AuthHelpers.generateRefreshToken( user ); 
 
                 let newRefreshTokenArray = !cookies?.jwt ? user.refreshToken : user.refreshToken.filter( rt => rt !== cookies.jwt );
 
@@ -100,7 +100,9 @@ class AuthController {
             return res.sendStatus( 401 );
         }
 
-        AuthHelpers.verifyRefreshToken( refreshToken, ( err, user ) => {
+        AuthHelpers.verifyRefreshToken( refreshToken, ( err, decoded ) => {
+            const { user } = decoded;
+
             if( err || userFound.email !== user.email ) {
                 return res.sendStatus( 403 );
             }
