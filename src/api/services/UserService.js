@@ -56,9 +56,9 @@ class UserService {
         GralHelpers.detectError( {
             ...user.validateSync(), // Validate model
             ...await UserService.#verifyRepeatedUsername( user.username ), // Verify username existance
-            ...await UserHelpers.getUpdateValueErrors.username( user.username ), // Verify username value model
+            ...UserHelpers.getUpdateValueErrors.username( user.username ), // Verify username value model
             ...await UserService.#verifyRepeatedEmail( user.email ), // Verify email
-            ...await UserHelpers.getUpdateValueErrors.password( user.password ) // Verify password form
+            ...UserHelpers.getUpdateValueErrors.password( user.password ) // Verify password form
         } ); // Catch errors
 
         // Hash password

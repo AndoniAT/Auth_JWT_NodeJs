@@ -43,6 +43,14 @@ class UserHelpers {
      * @returns {Boolean}
      */
     static verifyUsernameRules( username ) {
+        if( !username ) {
+            return false;
+        }
+
+        if( username.length < 3 ) {
+            return false;
+        }
+
         const specialCharactersRegex = /^[a-zA-Z0-9]*$/;
         return specialCharactersRegex.test( username );
     }
@@ -54,10 +62,15 @@ class UserHelpers {
      * with its message of the corresponding attribute
      */
     static getUpdateValueErrors = {
-        username: async ( username )=> ( UserHelpers.verifyUsernameRules( username ) ) ? {} : { username : { message: UserHelpers.username_rules_message } },
-        password: async ( password ) => ( UserHelpers.verifyPasswordRules( password ) ) ? {} : { password : { message: UserHelpers.password_rules_message  } },
+        username: ( username ) => ( UserHelpers.verifyUsernameRules( username ) ) ? {} : { username : { message: UserHelpers.username_rules_message } },
+        password: ( password ) => ( UserHelpers.verifyPasswordRules( password ) ) ? {} : { password : { message: UserHelpers.password_rules_message  } },
     };
 
+    /**
+     * Throw an error if the user has not been found
+     * Function conceived to return a 404 not found error in APIs
+     * @param {Object} user
+     */
     static detectUserFound( user ) {
         if( !user ) {
             throw new CustomError( UserHelpers.user_not_found_message, 404 );
@@ -65,6 +78,9 @@ class UserHelpers {
     }
 
     static hasAdminRole( roles ) {
+        if( !roles || !Array.isArray( roles ) ) {
+            return false;
+        }
         return roles.includes( Roles.admin );
     }
 }
