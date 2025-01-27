@@ -61,6 +61,12 @@ To charge the database for testing please run:
 
 > node src/api/services/tests/users_data_test.js
 
+#### Execute tests
+- Test Helpers
+  - > npm run testHelpers
+- Test Services
+  - > npm run testServices
+
 <h6>== USER ROLES ==</h6>
 
 <table style="margin: 0 auto; width: fit-content; border: 1px solid black;">
