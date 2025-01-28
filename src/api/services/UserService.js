@@ -7,6 +7,7 @@ const AuthHelpers = require( '../helpers/AuthHelpers' );
 const GralHelpers = require( '../helpers/GralHelpers' );
 const UserHelpers = require( '../helpers/UserHelpers' );
 const { User, Roles } = require( '../models/User' );
+const mongodb = require( 'mongodb' );
 
 class UserService {
 
@@ -47,18 +48,24 @@ class UserService {
             }
         }, projection ).exec();
 
-        return user;
+        return user ?? undefined;
     }
 
     static async createUser( user ) {
         user = new User( user );
+        let errors = {};
+        const validateError = user.validateSync();
+        if( validateError && validateError.errors ) {
+            errors = validateError.errors;
+        }
 
         GralHelpers.detectError( {
-            ...user.validateSync(), // Validate model
             ...await UserService.#verifyRepeatedUsername( user.username ), // Verify username existance
             ...UserHelpers.getUpdateValueErrors.username( user.username ), // Verify username value model
             ...await UserService.#verifyRepeatedEmail( user.email ), // Verify email
-            ...UserHelpers.getUpdateValueErrors.password( user.password ) // Verify password form
+            ...UserHelpers.getUpdateValueErrors.email( user.email ), // Verify email value model
+            ...UserHelpers.getUpdateValueErrors.password( user.password ), // Verify password form
+            ...errors // Validate model
         } ); // Catch errors
 
         // Hash password
@@ -94,13 +101,20 @@ class UserService {
         let info = await UserService.#setUserInformation( oldUser, newUser );
         let user = info.user;
 
+        // Validate model errors
+        let errors = {};
+        const validateError = user.validateSync();
+        if( validateError && validateError.errors ) {
+            errors = validateError.errors;
+        }
+
         GralHelpers.detectError( {
             // Repeated errors
             ...usernameError,
             ...emailError,
             // Model errors
             ...info.errors,
-            ...user.validateSync()
+            ...errors
         } ); // Catch errors
 
         // == Ready to save ==
@@ -118,12 +132,20 @@ class UserService {
     /**
      * Method created only to modify the refresh token for user
      * @param {String} id : Could be _id, username or email
-     * @param {String[]} refreshToken
+     * @param {String[]|String} refreshToken
      * @returns {Promise<Object>} userFound
      */
     static async updateRefreshTokenUser( id, refreshToken ) {
         let user = await UserService.getUser( id );
         UserHelpers.detectUserFound( user );
+
+        // Verify tokens
+        refreshToken = Array.isArray( refreshToken ) ? refreshToken : [ refreshToken ];
+
+        for( const token of refreshToken ) {
+            const err = await AuthHelpers.getUpdateValueErrors.refreshToken( token );
+            GralHelpers.detectError( err );
+        }
 
         user.refreshToken = refreshToken;
         user.updatedAt = new Date();
@@ -132,6 +154,11 @@ class UserService {
         return user;
     }
 
+    /**
+     *
+     * @param {String} id : It could be _id / email / username
+     * @returns {Promise<mongodb.DeleteResult>}
+     */
     static async deleteUser( id ) {
         const user = await UserService.getUser( id );
         UserHelpers.detectUserFound( user );

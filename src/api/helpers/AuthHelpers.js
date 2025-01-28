@@ -7,6 +7,9 @@ const bcrypt = require( 'bcrypt' );
 const CustomError = require( '../classes/customError' );
 
 class AuthHelpers {
+
+    static refreshTokenRulesMessage = 'Not valid refreshToken.';
+
     // eslint-disable-next-line no-undef
     static #accesTokenSecret = process.env.ACCESS_TOKEN_SECRET;
     // eslint-disable-next-line no-undef
@@ -47,6 +50,35 @@ class AuthHelpers {
     static verifyRefreshToken( refreshToken, cb ) {
         jwt.verify( refreshToken, this.#refreshTokenSecret, cb );
     }
+
+    /**
+     * Get errors in an update verifying rules and
+     * comparing old and new values
+     * Each attribute is a function that returns an error (if exists)
+     * with its message of the corresponding attribute
+     * @returns {Boolean}
+     */
+    static getUpdateValueErrors = {
+        refreshToken: async ( token ) => {
+            const verifyToken = () => {
+                return new Promise( ( resolve, reject ) => {
+                    AuthHelpers.verifyRefreshToken( token, ( err, decoded ) => {
+                        if( err ) {
+                            return reject( new CustomError( err.message, 400 ) );
+                        }
+                        resolve( decoded );
+                    } );
+                } );
+            };
+
+            try {
+                await verifyToken();
+                return {};
+            } catch {
+                return { refreshToken : { message: AuthHelpers.refreshTokenRulesMessage } };
+            }
+        }
+    };
 
     /**l
      * Sign jwt

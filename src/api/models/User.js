@@ -9,7 +9,8 @@ const UserSchema = new mongoose.Schema( {
     username: {
         type: String,
         required: true,
-        minLength: 3
+        minLength: 3,
+        unique: true
     },
     firstname: {
         type: String,
@@ -30,6 +31,7 @@ const UserSchema = new mongoose.Schema( {
         required: true,
         lowercase: true,
         minLength: 10,
+        unique: true
     },
     createdAt: {
         type: Date,
