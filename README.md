@@ -204,33 +204,34 @@ To charge init data in database for development please run:
 <h6>== ROUTES ==</h6>
 
 > /api/auth/
-  - ><p style="color:blue">/login [POST]</p>
+  - ><div style="background-color:#7a9dc3;color:black;"> &nbsp;&nbsp;/login [POST]</div>
     >Allow the user to login in the application, this API returns the a valid acces token for the user with 10m duration and store another token (refresh token) in cookies if first token expires. Also the refresh token is also stored en database.
 
-  - ><p style="color:green">/token [GET]<p>
+  - ><div style="background-color:#7ac37a; color:black"> &nbsp;&nbsp;/token [GET]</div>
     >Allow the user to get a new access token if his token is already expired. This API uses the token stored in cookies in order to valid the connected user and return a new valid token.
 
-  - ><p style="color:green">/logout [GET]</p>
+  - ><div style="background-color:#7ac37a; color:black"> &nbsp;&nbsp;/logout [GET]</div>
     Disconnect user from the application and clean cookies and remove the refresh token from the database.
 
 > /api/users/
-  - ><p style="color:green">/ [GET]</p>
+  - ><div style="background-color:#7ac37a; color:black"> &nbsp;&nbsp;/ [GET]</div>
   Returns all the users in the application. However the information is filtered depending of the user connected role.
 
-  - ><p style="color:blue">/ [POST]</p>
+  - ><div style="background-color:#7a9dc3;color:black;"> &nbsp;&nbsp;/ [POST]</div>
   Creates a new user, this API can only be called when we are not connected. It allow an user to create an account in the application.
 
-  - ><p style="color:green">/:id [GET]</p>
+  - ><div style="background-color:#7ac37a; color:black"> &nbsp;&nbsp;/:id [GET]</div>
   Get an user by an id. This id can be the _id in database, or the username or email of user. The information is filtered depending of the user connected role.
 
-  - ><p style="color:#afaf1f">/:id [PUT]</p>
-  This API allows the user to modify his own information. Or if it's an admin, a user information.
-  A user can only modify : username, lastname, email and password.
-  An admin can also modify the roles.
+  - ><div style="background-color:#ebe876;color:black;"> &nbsp;&nbsp;/:id [PUT]</div>
+    >This API allows the user to modify his own information. Or if it's an admin, a user information.
+    >
+    >A user can only modify : username, lastname, email and password.
+    > An admin can also modify the roles.
 
-  - ><p style="color:red">/:id [DELETE]</p>
-  This API allows the user delete his account. Or if it's an admin, a user account.
-  The admin cannot be deleted if he is the last admin in the application.
+  - ><div style="background-color:#f77373;color:black;"> &nbsp;&nbsp;/:id [DELETE]</div>
+    >This API allows the user delete his account. Or if it's an admin, a user account.
+    >The admin cannot be deleted if he is the last admin in the application.
 
 <hr/>
 <h5>Author: <i>Andoni ALONSO TORT</i><h5>
