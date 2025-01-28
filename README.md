@@ -57,7 +57,7 @@ Do it again and put the value in REFRESH_TOKEN_SECRET key
 
 
 <h6>== TEST DETAILS ==</h6>
-To charge the database for testing please run:
+To charge init data in database for development please run:
 
 > node src/api/services/tests/users_data_test.js
 
@@ -66,6 +66,8 @@ To charge the database for testing please run:
   - > npm run testHelpers
 - Test Services
   - > npm run testServices
+- Test Apis
+  - > npm run testApis
 
 <h6>== USER ROLES ==</h6>
 
