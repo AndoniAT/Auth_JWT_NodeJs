@@ -1,12 +1,27 @@
-require( '../../src/index' );
+/**
+ * Author: Andoni ALONSO TORT
+ */
 
-process.env.NODE_ENV = 'test';
+/** Server */
+require( '../../src/index' );
 console.log( 'Test userHelpers => Node env :', process.env.NODE_ENV );
 
-const { describe, it } = require( 'mocha' );
+/** Services / Helpers / Classes */
 const UserHelpers = require( '../../src/api/helpers/UserHelpers' );
 const CustomError = require( '../../src/api/classes/customError' );
 
+/** Libraries */
+const { describe, it } = require( 'mocha' );
+const chai = require( 'chai' );
+const chaiHttp = require( 'chai-http' );
+
+const expect = chai.expect;
+chai.should();
+chai.use( chaiHttp );
+
+/**
+ * == TESTS ==
+ */
 describe( '/UserHelpers tests', () => {
     describe( 'Verify password rules', () => {
         const verifyNotValidPasswordRules = passwords => {
@@ -18,7 +33,7 @@ describe( '/UserHelpers tests', () => {
                 err.should.be.an( 'object' );
                 err.should.haveOwnProperty( 'password' );
                 err.password.should.haveOwnProperty( 'message' );
-                err.password.message.should.to.be.equal( UserHelpers.password_rules_message );
+                err.password.message.should.to.be.equal( UserHelpers.passwordRulesMessage );
             }
         };
 
@@ -68,7 +83,7 @@ describe( '/UserHelpers tests', () => {
                 err.should.be.an( 'object' );
                 err.should.haveOwnProperty( 'username' );
                 err.username.should.haveOwnProperty( 'message' );
-                err.username.message.should.to.be.equal( UserHelpers.username_rules_message );
+                err.username.message.should.to.be.equal( UserHelpers.usernameRulesMessage );
             }
         };
 

@@ -1,11 +1,27 @@
-require( '../../src/index' );
+/**
+ * Author: Andoni ALONSO TORT
+ */
 
-process.env.NODE_ENV = 'test';
+/** Server */
+require( '../../src/index' );
 console.log( 'Test GralHelpers => Node env :', process.env.NODE_ENV );
 
-const { describe, it } = require( 'mocha' );
+/** Services / Helpers / Classes */
 const GralHelpers = require( '../../src/api/helpers/GralHelpers' );
 const CustomError = require( '../../src/api/classes/customError' );
+
+/** Libraries */
+const { describe, it } = require( 'mocha' );
+const chai = require( 'chai' );
+const chaiHttp = require( 'chai-http' );
+
+const expect = chai.expect;
+chai.should();
+chai.use( chaiHttp );
+
+/**
+ * == TESTS ==
+ */
 
 describe( '/GralHelpers tests', () => {
     describe( 'Detect Errors', () => {

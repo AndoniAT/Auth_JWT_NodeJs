@@ -1,21 +1,23 @@
 /**
- * Author : Andoni ALONSO TORT
+ * Author: Andoni ALONSO TORT
  */
+
+/** Server */
 require( '../../src/index' );
-process.env.NODE_ENV = 'test';
 console.log( 'Test authHelpers => Node env :', process.env.NODE_ENV );
 
+/** Services / Helpers / Classes */
 const AuthHelpers = require( '../../src/api/helpers/AuthHelpers' );
 const CustomError = require( '../../src/api/classes/customError' );
 
+/** Libraries */
 const bcrypt = require( 'bcrypt' );
-
 const { describe, it } = require( 'mocha' );
 const chai = require( 'chai' );
-const expect = chai.expect;
-const should = chai.should();
-
 const chaiHttp = require( 'chai-http' );
+
+const expect = chai.expect;
+chai.should();
 chai.use( chaiHttp );
 
 describe( '/AuthHelpers test', () => {
