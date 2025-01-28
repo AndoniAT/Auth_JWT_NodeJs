@@ -11,11 +11,13 @@ const UserService = require( '../../src/api/services/UserService' );
 const AuthHelpers = require( '../../src/api/helpers/AuthHelpers' );
 const CustomError = require( '../../src/api/classes/customError' );
 
+/** Initial Config Test */
+const { restartConfig, closeConfig } = require( '../configTest' );
+
 /** Models */
 const { User } = require( '../../src/api/models/User' );
 
 /** Libraries */
-const { default: mongoose } = require( 'mongoose' );
 const { before, after, describe, it, beforeEach } = require( 'mocha' );
 const chai = require( 'chai' );
 const expect = chai.expect;
@@ -71,40 +73,12 @@ const  passwordsCorrect = [
 ];
 
 /**
- * == Config start functions for DB ==
- */
-
-const restarDatabase = async () => {
-    console.log( 'Restart connection to database' );
-    await mongoose.connection.dropDatabase(); // Réinitialisez la base pour éviter les conflits
-    //mongoose.set( 'debug', true );
-
-    const env = process.env;
-
-    await mongoose.connect( env.DATABASE_URL + env.DATABASE_NAME );
-    console.log( `== Connected to ${env.DATABASE_NAME} ==` );
-};
-
-const restartData = async () => {
-    // Restart data
-    await User.deleteMany( {} );
-    for( let idx of mongoUsers.keys() ) {
-        mongoUsers[ idx ] = await UserService.createUser( mongoUsers[ idx ] );
-    }
-};
-
-const restartConfig = async () => {
-    await restarDatabase();
-    await restartData();
-};
-
-/**
  * == TESTS ==
  */
 
 describe( '/UserService tests', () => {
     before( done => {
-        restartConfig().then( done ).catch( done );
+        restartConfig( mongoUsers ).then( done ).catch( done );
     } );
     
     const verifyProjectionProps = async ( users, projection ) => {
@@ -865,11 +839,6 @@ describe( '/UserService tests', () => {
 
     after( async () => {
         console.log( '== Test finished ==' );
-        console.log( '=> Clean Data!' );
-        await User.deleteMany( {} );
-
-        console.log( '=> Close connection' );
-        await mongoose.connection.db.dropDatabase();
-        mongoose.connection.close();
+        await closeConfig();
     } );
 } );
