@@ -1,3 +1,7 @@
+/**
+ * Author : Andoni ALONSO TORT
+ */
+
 const allowedOrigins = require( './allowedOrigins' );
 
 const corsOptions = {

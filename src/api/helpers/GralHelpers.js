@@ -1,3 +1,7 @@
+/**
+ * Author : Andoni ALONSO TORT
+ */
+
 const CustomError = require( '../classes/customError' );
 
 class GralHelpers {

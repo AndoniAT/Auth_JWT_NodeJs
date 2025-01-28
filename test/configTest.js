@@ -1,3 +1,7 @@
+/**
+ * Author : Andoni ALONSO TORT
+ */
+
 /** Services / Helpers / Classes */
 const UserService = require( '../src/api/services/UserService' );
 

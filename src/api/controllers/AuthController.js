@@ -1,6 +1,7 @@
 /**
  * Author : Andoni ALONSO TORT
  */
+
 const UserService = require( '../services/UserService' );
 const AuthHelpers = require( '../helpers/AuthHelpers' );
 const CustomError = require( '../classes/customError' );

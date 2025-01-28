@@ -1,3 +1,7 @@
+/**
+ * Author : Andoni ALONSO TORT
+ */
+
 const mongoose = require( 'mongoose' );
 
 const ROLES = {

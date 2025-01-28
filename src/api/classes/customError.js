@@ -1,3 +1,7 @@
+/**
+ * Author : Andoni ALONSO TORT
+ */
+
 class CustomError extends Error {
     status;
 

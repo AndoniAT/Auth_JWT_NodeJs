@@ -1,3 +1,7 @@
+/**
+ * Author : Andoni ALONSO TORT
+ */
+
 console.log( '======= TEST USERS DATA =======' );
 require( 'dotenv' ).config();
 const mongoose = require( 'mongoose' );

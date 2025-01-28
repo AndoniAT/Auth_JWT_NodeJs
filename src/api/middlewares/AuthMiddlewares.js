@@ -1,3 +1,7 @@
+/**
+ * Author : Andoni ALONSO TORT
+ */
+
 const AuthHelpers = require( '../helpers/AuthHelpers' );
 const { Roles } = require( '../models/User' );
 const UserService = require( '../services/UserService' );
