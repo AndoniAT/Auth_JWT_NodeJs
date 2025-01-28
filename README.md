@@ -211,17 +211,17 @@ To charge init data in database for development please run:
     >Allow the user to get a new access token if his token is already expired. This API uses the token stored in cookies in order to valid the connected user and return a new valid token.
 
   - ><div style="background-color:#7ac37a; color:black"> &nbsp;&nbsp;/logout [GET]</div>
-    Disconnect user from the application and clean cookies and remove the refresh token from the database.
+    > Disconnect user from the application and clean cookies and remove the refresh token from the database.
 
 > /api/users/
   - ><div style="background-color:#7ac37a; color:black"> &nbsp;&nbsp;/ [GET]</div>
-  Returns all the users in the application. However the information is filtered depending of the user connected role.
+    > Returns all the users in the application. However the information is filtered depending of the user connected role.
 
   - ><div style="background-color:#7a9dc3;color:black;"> &nbsp;&nbsp;/ [POST]</div>
-  Creates a new user, this API can only be called when we are not connected. It allow an user to create an account in the application.
+    > Creates a new user, this API can only be called when we are not connected. It allow an user to create an account in the application.
 
   - ><div style="background-color:#7ac37a; color:black"> &nbsp;&nbsp;/:id [GET]</div>
-  Get an user by an id. This id can be the _id in database, or the username or email of user. The information is filtered depending of the user connected role.
+    >Get an user by an id. This id can be the _id in database, or the username or email of user. The information is filtered depending of the user connected role.
 
   - ><div style="background-color:#ebe876;color:black;"> &nbsp;&nbsp;/:id [PUT]</div>
     >This API allows the user to modify his own information. Or if it's an admin, a user information.
