@@ -59,7 +59,17 @@ class AuthController {
 
                 // Saving refresh token with current user
                 let rt = [ ...newRefreshTokenArray, refreshToken ];
-                await UserService.updateRefreshTokenUser( username, rt );
+
+                // Take only valid tokens to modify user
+                let validTokens = [];
+                for( const token of rt ) {
+                    const err = await AuthHelpers.getUpdateValueErrors.refreshToken( token );
+                    if( !err.refreshToken ) {
+                        validTokens.push( token );
+                    }
+                }
+
+                await UserService.updateRefreshTokenUser( username, validTokens );
 
                 // Cookie as http only so it is not available in js
                 res.cookie( 'jwt', refreshToken, { httpOnly: true, sameSite: 'None', secure: true,
